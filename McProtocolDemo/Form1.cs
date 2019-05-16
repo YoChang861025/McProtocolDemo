@@ -26,7 +26,7 @@ namespace McProtocolDemo
             base.OnShown(e);
 
             connect();
-            read();
+      
           
         }
 
@@ -39,7 +39,7 @@ namespace McProtocolDemo
         }
         public void connect()
         {
-            string ip = "192.168.2.12";
+            string ip = "192.168.1.63";
             int port = 3000;
 
             mcProtocol = new McProtocol(ip, port);
@@ -51,14 +51,14 @@ namespace McProtocolDemo
                 Text = "McProtocol disconnect";
         }
 
-        private void read()
+        private void read(int address)
         {
 
             if (mcProtocol == null || !mcProtocol.IsConnected)
                 return;
 
             short[] readData = new short[1];
-            var rtn = mcProtocol.ExecuteRead("D", 1000, 10, ref readData);
+            var rtn = mcProtocol.ExecuteRead("D", address, 1, ref readData);
 
             if (rtn != 0)
                 Console.WriteLine("Error code: " + rtn);
@@ -67,21 +67,23 @@ namespace McProtocolDemo
                 Console.WriteLine("Read success.");
                 // Data format convert. All convert function in McCommand
                 string strData = McCommand.ShortArrayToASCIIString(false, readData[0]);
-                string intDataStr = McCommand.ShortArrayToInt16String(readData[1]);
+                //string intDataStr = McCommand.ShortArrayToInt16String(readData[1]);
+                
             }
+          
         }
 
-        private void write()
+        private void write(int address ,string input_data)
         {
             if (mcProtocol == null || !mcProtocol.IsConnected)
                 return;
 
-            short[] writeData = McCommand.Int16StringToShortArray("1");
+            short[] writeData = McCommand.Int16StringToShortArray(input_data);
 
             // 1 word = 16 bit = 2 character
             //short[] writeData = McCommand.ASCIIStringToShortArray("HI");
 
-            int rtn = mcProtocol.ExecuteWrite("D", 1000, 1, writeData);
+            int rtn = mcProtocol.ExecuteWrite("D", address, 1, writeData);
 
             if (rtn != 0)
                 Console.WriteLine("Error code: " + rtn);
@@ -112,17 +114,16 @@ namespace McProtocolDemo
         }
 
         int tem = 1;
-
+        int input_address = 0;
         private void button1_Click(object sender, EventArgs e)
         {
             SV report = new SV();
             
             while (tem == 1)
-
             {
                 report.getVolue();
-                label1.Text = report.temperatue.ToString("#0.00000");
-                label2.Text = report.pa.ToString("#0.00000");
+                label1.Text = report.temperatue.ToString();
+                label2.Text = report.pa.ToString();
                 label3.Text = report.rotationX.ToString();
                 label4.Text = report.rotationY.ToString();
                 label5.Text = report.rotationZ.ToString();
@@ -134,8 +135,24 @@ namespace McProtocolDemo
                 label4.Update();
                 label5.Update();
 
-                continue;
 
+                /* write(input_address, label1.Text);
+                 input_address++;
+                 write(input_address, label2.Text);
+                 input_address++;
+                 write(input_address, label3.Text);
+                 input_address++;
+                 write(input_address, label4.Text);
+                 input_address++;
+                 write(input_address, label5.Text);
+                 input_address++; */
+
+                read(input_address);
+                input_address++;
+
+
+                continue;
+                
 
                 //while迴圈修正，手動關閉
             }
