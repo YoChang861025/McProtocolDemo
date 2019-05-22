@@ -135,7 +135,7 @@ namespace McProtocolDemo
                 label5.Update();
 
                 continue;
-
+                
 
                 //while迴圈修正，手動關閉
             }
