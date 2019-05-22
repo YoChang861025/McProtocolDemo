@@ -40,7 +40,7 @@ namespace McProtocolDemo
         public void connect()
         {
             string ip = "192.168.1.63";
-            int port = 3000;
+            int port = 4000;
 
             mcProtocol = new McProtocol(ip, port);
             mcProtocol.Connect();
@@ -148,7 +148,7 @@ namespace McProtocolDemo
                  input_address++; */
 
                 read(input_address);
-                input_address++;
+             
 
 
                 continue;
