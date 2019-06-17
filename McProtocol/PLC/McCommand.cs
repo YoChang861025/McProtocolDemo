@@ -143,6 +143,19 @@ namespace McProtocol_Ref.PLC
         }
 
         /// <summary>
+        /// Swaps the byte in byte array.
+        /// </summary>
+        /// <param name="buf">The byte array data.</param>
+        /// <param name="i">The first position.</param>
+        /// <param name="j">The second position.</param>
+        public static void SwapBytes(this byte[] buf, int i, int j)
+        {
+            byte temp = buf[i];
+            buf[i] = buf[j];
+            buf[j] = temp;
+        }
+
+        /// <summary>
         /// Gets the complete code of McProtocol response.
         /// </summary>
         /// <param name="responseStr">The McProtocol response string.</param>
@@ -186,6 +199,7 @@ namespace McProtocol_Ref.PLC
         /// </summary>
         /// <param name="shorts">The short array.</param>
         /// <returns></returns>
+        /*
         public static DateTime BCDShortsToDateTime(params short[] shorts)
         {
             string dateStr = string.Empty;
@@ -196,30 +210,10 @@ namespace McProtocol_Ref.PLC
                 dateStr += ShortToBCD(shorts[i]).ToString();
             }
 
-            DateTime dt = parseToDateTime(dateStr);
+            DateTime dt = Util.TimeUtil.ParseToDateTime(dateStr);
             return dt;
         }
-
-        /// <summary>
-        /// Parses dateTime string to dateTime.
-        /// </summary>
-        /// <param name="dateStr">The dateTime string.</param>
-        /// <param name="format">The dateTime format.</param>
-        /// <returns></returns>
-        private static DateTime parseToDateTime(string dateStr, string format = "yyMMddHHmmss")
-        {
-            DateTime dt;
-
-            if (DateTime.TryParseExact(dateStr, format, null, System.Globalization.DateTimeStyles.None, out dt))
-            {
-                return dt;
-            }
-            else
-            {
-                Console.WriteLine(string.Format("Fail to parse time `{0}`", dateStr));
-                return DateTime.Now;
-            }
-        }
+        */
 
         /// <summary>
         /// Convert format from BCD to the short (PLC word).
@@ -450,6 +444,14 @@ namespace McProtocol_Ref.PLC
             return Convert.ToUInt16(shortArray[0]).ToString();
         }
 
+        public static short ShortArrayToUInt16(params short[] shortArray)
+        {
+            if (shortArray.Length != 1)
+                throw new Exception("Size error. Unsign Int16 need 1 word (16 bit).");
+
+            return Convert.ToInt16(Convert.ToUInt16(shortArray[0]));
+        }
+
         /// <summary>
         /// Convert short array to unsign int32 string.
         /// </summary>
@@ -465,6 +467,17 @@ namespace McProtocol_Ref.PLC
             Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
 
             return BitConverter.ToUInt32(byteArray, 0).ToString();
+        }
+
+        public static int ShortArrayToUInt32(params short[] shortArray)
+        {
+            if (shortArray.Length != 2)
+                throw new Exception("Size error. Unsign Int32 need 2 word (32 bit).");
+
+            byte[] byteArray = new byte[shortArray.Length * 2];
+            Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
+
+            return Convert.ToInt32(BitConverter.ToUInt32(byteArray, 0));
         }
 
         /// <summary>
@@ -484,6 +497,17 @@ namespace McProtocol_Ref.PLC
             return BitConverter.ToUInt64(byteArray, 0).ToString();
         }
 
+        public static long ShortArrayToUInt64(params short[] shortArray)
+        {
+            if (shortArray.Length != 4)
+                throw new Exception("Size error. Unsign Int64 need 4 word (64 bit).");
+
+            byte[] byteArray = new byte[shortArray.Length * 2];
+            Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
+
+            return Convert.ToInt64(BitConverter.ToUInt64(byteArray, 0));
+        }
+
         /// <summary>
         /// Convert short array to int16 string.
         /// </summary>
@@ -499,6 +523,17 @@ namespace McProtocol_Ref.PLC
             Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
 
             return BitConverter.ToInt16(byteArray, 0).ToString();
+        }
+
+        public static int ShortArrayToInt16(params short[] shortArray)
+        {
+            if (shortArray.Length != 1)
+                throw new Exception("Size error. Int16 need 1 word (16 bit).");
+
+            byte[] byteArray = new byte[shortArray.Length * 2];
+            Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
+
+            return Convert.ToInt32(BitConverter.ToInt16(byteArray, 0));
         }
 
         /// <summary>
@@ -518,6 +553,17 @@ namespace McProtocol_Ref.PLC
             return BitConverter.ToInt32(byteArray, 0).ToString();
         }
 
+        public static int ShortArrayToInt32(params short[] shortArray)
+        {
+            if (shortArray.Length != 2)
+                throw new Exception("Size error! Int32 need 2 word (32 bit).");
+
+            byte[] byteArray = new byte[shortArray.Length * 2];
+            Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
+
+            return Convert.ToInt32(BitConverter.ToInt32(byteArray, 0));
+        }
+
         /// <summary>
         /// Convert short array to int64 string.
         /// </summary>
@@ -533,6 +579,17 @@ namespace McProtocol_Ref.PLC
             Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
 
             return BitConverter.ToInt64(byteArray, 0).ToString();
+        }
+
+        public static long ShortArrayToInt64(params short[] shortArray)
+        {
+            if (shortArray.Length != 4)
+                throw new Exception("Size error! Int64 need 4 word (64 bit).");
+
+            byte[] byteArray = new byte[shortArray.Length * 2];
+            Buffer.BlockCopy(shortArray, 0, byteArray, 0, byteArray.Length);
+
+            return Convert.ToInt64(BitConverter.ToInt64(byteArray, 0));
         }
 
         /// <summary>
@@ -610,9 +667,6 @@ namespace McProtocol_Ref.PLC
         /// <returns></returns>
         public static short[] ASCIIStringToShortArray(string ASCIIString, bool reverse = false)
         {
-            if (string.IsNullOrEmpty(ASCIIString))
-                throw new Exception("ASCII string cannot be null or empty.");
-
             if (ASCIIString.Length % 2 == 1)
                 ASCIIString = ASCIIString.PadRight(ASCIIString.Length + 1, ' ');
 
@@ -643,6 +697,14 @@ namespace McProtocol_Ref.PLC
             };
         }
 
+        public static short[] Int16ToShortArray(short shortData)
+        {
+            return new short[]
+            {
+                Convert.ToInt16(shortData)
+            };
+        }
+
         /// <summary>
         /// Convert Int32 string to short array.
         /// </summary>
@@ -664,6 +726,19 @@ namespace McProtocol_Ref.PLC
             return result;
         }
 
+        public static short[] Int32ToShortArray(int intData)
+        {
+            short[] result = new short[2];
+            int num = Convert.ToInt32(intData);
+            short low = (short)(num << 16 >> 16);
+            short high = (short)(num >> 16);
+
+            result[0] = low;
+            result[1] = high;
+
+            return result;
+        }
+
         /// <summary>
         /// Convert Int64 string to short array.
         /// </summary>
@@ -676,6 +751,23 @@ namespace McProtocol_Ref.PLC
 
             short[] result = new short[4];
             long num = Convert.ToInt64(ASCIIString);
+            short first = (short)(num >> 48);
+            short second = (short)(num << 16 >> 32);
+            short third = (short)(num << 32 >> 16);
+            short fourth = (short)(num << 48);
+
+            result[0] = fourth;
+            result[1] = third;
+            result[2] = second;
+            result[3] = first;
+
+            return result;
+        }
+
+        public static short[] Int64ToShortArray(long longData)
+        {
+            short[] result = new short[4];
+            long num = Convert.ToInt64(longData);
             short first = (short)(num >> 48);
             short second = (short)(num << 16 >> 32);
             short third = (short)(num << 32 >> 16);
@@ -787,21 +879,5 @@ namespace McProtocol_Ref.PLC
         }
 
         #endregion
-    }
-
-    public static class Extension
-    {
-        /// <summary>
-        /// Swaps the byte in byte array.
-        /// </summary>
-        /// <param name="buf">The byte array data.</param>
-        /// <param name="i">The first position.</param>
-        /// <param name="j">The second position.</param>
-        public static void SwapBytes(this byte[] buf, int i, int j)
-        {
-            byte temp = buf[i];
-            buf[i] = buf[j];
-            buf[j] = temp;
-        }
     }
 }

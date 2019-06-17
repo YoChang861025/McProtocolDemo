@@ -59,6 +59,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="MCPBuild.cs" />
+    <Compile Include="MC\MCDValue.cs" />
+    <Compile Include="MC\MCMValue.cs" />
+    <Compile Include="MC\MCP.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
