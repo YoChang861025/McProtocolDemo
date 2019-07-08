@@ -35,8 +35,9 @@ namespace ClassLibrary5
             rotationY = randomR.Next(0, 100);
             rotationZ = randomR.Next(0, 100);
 
+            
         }
-
-
+        
+        
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Datalist;
 
 namespace ZR
 {
@@ -15,13 +14,12 @@ namespace ZR
         bool Comment = false;
         int Size = 1;
 
-        Datatable datatable = new Datatable();
         
         //存取要讀取的ZR位置
         public string Address(string address)
         {
             this.Link_Address = address;
-            datatable.Getaddress(address);
+            //datatable.Getaddress(address);
             return Link_Address;
         }
 
