@@ -16,6 +16,10 @@ namespace McProtocolDemo
     public partial class Form1 : Form
     {
         public McProtocol mcProtocol;
+
+        //測試insert資料庫
+        private Database db = new Database("127.0.0.1", 3306, "root", "", "test");
+
         public Form1()
         {
             InitializeComponent();
@@ -26,7 +30,7 @@ namespace McProtocolDemo
             base.OnShown(e);
 
             connect();
-      
+
           
         }
 
@@ -113,6 +117,8 @@ namespace McProtocolDemo
 
         }
 
+
+
         int i = 0;
         int input_address = 0;
 
@@ -148,8 +154,51 @@ namespace McProtocolDemo
         private void timer1_Tick(object sender, EventArgs e) //目前clock為1000毫秒
         {
             SV report = new SV(); 
+            
+            DataTable table = new DataTable();
+            //init columns
+            table.Columns.Add("temperture", typeof(string));
+            table.Columns.Add("pa", typeof(string));
+            table.Columns.Add("rotationX", typeof(string));
+            table.Columns.Add("rotationY", typeof(string));
+            table.Columns.Add("rotationZ", typeof(string));
+
+            //data type
+            table.Columns.Add("Time", typeof(string));
+            table.Columns.Add("SID", typeof(string));
+            table.Columns.Add("ValueName", typeof(string));
+            table.Columns.Add("BeforeValueName", typeof(string));
+            table.Columns.Add("ValueType", typeof(string));
+            table.Columns.Add("Value", typeof(string));
 
             report.getVolue();//產生資料
+            
+             string s = "station1";
+             string t = DateTime.Now.ToString();
+             string state = "Normal";
+             string tem = "50C";
+             string pa = "1003pa";
+             string valuetype = "0";
+             string value = "000";
+             string posi = "X_Y";
+             string x = "17.58";
+             string y = "20.1";
+             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, "0", "0", "0", "0");
+             //成功insert進資料庫
+             
+             //table.Rows.Add(label1.Text, label2.Text, label3.Text, label4.Text, label5.Text);
+
+                //Datatable的部分目前可以做成二維陣列然後保持讀進狀態
+                //也能成功保存下來 目前只差將input的部份抽出並把datatable連動
+                DataRow dr = table.NewRow();
+                dr["temperture"] = label1.Text;
+                dr["pa"] = label2.Text;
+                dr["rotationX"] = label3.Text;
+                dr["rotationY"] = label4.Text;
+                dr["rotationZ"] = label5.Text;
+                table.Rows.Add(dr);
+
+
 
             label1.Text = report.temperatue.ToString();
             label2.Text = report.pa.ToString();
