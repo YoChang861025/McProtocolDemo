@@ -22,7 +22,7 @@ namespace McProtocolDemo
                 AllData.Columns.Add("StationID");   //機器ID
                 AllData.Columns.Add("DateTime");    //時間戳記
                 AllData.Columns.Add("StationState");//機器狀態       0:Normal、1:Warning
-                AllData.Columns.Add("Temperature");  //偵測溫度
+                AllData.Columns.Add("Temperature"); //偵測溫度
                 AllData.Columns.Add("Pa");          //偵測氣壓
                 AllData.Columns.Add("ValueType");   //預存值型別     0:D區、1:M區的值、2:例外
                 AllData.Columns.Add("Value");       //儲存的值       
@@ -33,7 +33,7 @@ namespace McProtocolDemo
                 AllData.Columns.Add("RotationA");   //以下為預留空間
                 AllData.Columns.Add("RotationB");
                 AllData.Columns.Add("RotationC");
-
+                
             }
             //這裡回傳的AllData會是靜態資料表
             return AllData;

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using System.Data.SqlClient;
 using System.Data;
+using Z.BulkOperations;
+
 
 namespace McProtocolDemo
 {
@@ -17,26 +19,24 @@ namespace McProtocolDemo
         private string Password;
         private string DatabaseName;
         private object DBlock;
-        private string Datetime;
 
-        public Database(string _dataIP, int _port, string _UserName, string _password, string _databasename)
+        public Database(string _dataIP, int _port, string _userName, string _password, string _databasename)
         {
             this.DataIP = _dataIP;
             this.Port = _port;
-            this.UserName = _UserName;
+            this.UserName = _userName;
             this.Password = _password;
             this.DatabaseName = _databasename;
-            DBlock = new object();
+            this.DBlock = new object();
         }
 
-        private MySqlConnection EstablishConnection()
+        private MySqlConnection establishConnection()
         {
             MySqlConnection connection;
             String MySQLConnectionString = "server=" + DataIP + ";port=" + Port + ";user=" + UserName + ";password=" + Password + ";database=" + DatabaseName + ";character set=utf8;";
             connection = new MySqlConnection(MySQLConnectionString);
             return connection;
         }
-
 
         /*
         public string dbHost;
@@ -68,7 +68,6 @@ namespace McProtocolDemo
         }
         */
 
-
         //public void CreateTable(string name)
         
 
@@ -89,7 +88,7 @@ namespace McProtocolDemo
             }
             return isOk;
         }
-        //還不確定如果在確定isOk為false的情況下怎麼將insert中止
+        //還不確定如果在isOk為false的情況下怎麼將insert中止
 
         //還沒修改
         public void Insert(string name, ref short[] value, int size, int startaddress)
@@ -105,7 +104,7 @@ namespace McProtocolDemo
                 var startaddress_string = Convert.ToString(startaddress + i);
                 string index = name + startaddress_string;
                 query = "INSERT INTO d(address,num) values('" + index + "','" + value[i] + ")";
-                MySqlConnection connection = EstablishConnection();
+                MySqlConnection connection = establishConnection();
                 MySqlCommand command = new MySqlCommand(query, connection);
                 command.CommandTimeout = 60;
 
@@ -126,39 +125,72 @@ namespace McProtocolDemo
         }
 
         //insert一列資料到Database
-        public void InsertOneQuery(string _stationID, string _dateTime, string _stationState, string _temperture, string _pa, string _valuetype, string _value, string _positionState, string _x, string _y, string _z, string _a, string _b, string _c)
+        public void InsertOneQuery(string _stationID, string _dateTime, string _stationState, string _temperature, string _pa, string _valuetype, string _value, string _positionState, string _x, string _y, string _z, string _a, string _b, string _c)
         {
             lock(DBlock)
             {
-                String query = "INSERT INTO PLC VALUE(\'" + _stationID + "\',\'" + _dateTime + "\',\'" +_stationState + "\',\'" + _temperture + "\',\'" + _pa + "\',\'" + _valuetype + "\',\'" + _value + "\',\'" + _positionState + "\',\'" + _x + "\',\'" + _y + "\',\'" +_z + "\',\'" + _a + "\',\'" + _b + "\',\'" + _c + "'" + ')';
-                MySqlConnection connection = EstablishConnection();
-                MySqlCommand command = new MySqlCommand(query, connection);
-                command.CommandTimeout = 60;
-
-                try
+                //String query = "INSERT INTO PLC VALUE(\'" + _stationID + "\',\'" + _dateTime + "\',\'" +_stationState + "\',\'" + _temperature + "\',\'" + _pa + "\',\'" + _valuetype + "\',\'" + _value + "\',\'" + _positionState + "\',\'" + _x + "\',\'" + _y + "\',\'" +_z + "\',\'" + _a + "\',\'" + _b + "\',\'" + _c + "'" + ')';
+                String query = "INSERT INTO PLC (StationID,DateTime,StationState,Temperature,Pa,ValueType,Value,PositionState,X,Y,Z,A,B,C) values(@StationID,@DateTime,@StationState,@Temperature,@Pa,@ValueType,@Value,@PositionState,@X,@Y,@Z,@A,@B,@C)";
+                MySqlConnection connection = establishConnection();
+                connection.Open();
+                using (MySqlCommand command = new MySqlCommand(query, connection))
                 {
-                    connection.Open();
-                    MySqlDataReader reader = command.ExecuteReader();
+                    command.CommandTimeout = 60;
 
-                    if(reader.HasRows)
-                    {
-                        while(reader.Read())
-                        {
-                            reader.Close();
-                        }
-                    }
-                    connection.Close();
+                    command.Parameters.AddWithValue("@StationID", _stationID);
+                    command.Parameters.AddWithValue("@DateTime", _dateTime);
+                    command.Parameters.AddWithValue("@StationState", _stationState);
+                    command.Parameters.AddWithValue("@Temperature", _temperature);
+                    command.Parameters.AddWithValue("@Pa", _pa);
+                    command.Parameters.AddWithValue("@ValueType", _valuetype);
+                    command.Parameters.AddWithValue("@Value", _value);
+                    command.Parameters.AddWithValue("@PositionState", _positionState);
+                    command.Parameters.AddWithValue("@X", _x);
+                    command.Parameters.AddWithValue("@Y", _y);
+                    command.Parameters.AddWithValue("@Z", _z);
+                    command.Parameters.AddWithValue("@A", _a);
+                    command.Parameters.AddWithValue("@B", _b);
+                    command.Parameters.AddWithValue("@C", _c);
+
+                    command.ExecuteNonQuery();
+                    //try
+                    //{
+                    //    MySqlDataReader reader = command.ExecuteReader();
+                    //    if (reader.HasRows)
+                    //    {
+                    //        while (reader.Read())
+                    //        {
+                    //            reader.Close();
+                    //        }
+                    //    }
+                    //    connection.Close();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    Console.WriteLine(ex.Message);
+                    //    //報錯
+                    //}
                 }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
+                connection.Close();
             }
         }
-        //一次更新整個Datatable到Database
-        public void Update(DataTable _dataTable)
-        {
 
+        //一次更新整個Datatable到Database
+        public void InsertDatatable(DataTable _dataTable)
+        {
+            lock(DBlock)
+            {
+                MySqlConnection connection = establishConnection();
+                connection.Open();
+                //輸入bulkcopy之前轉換connection型別
+                //using (var sqlBulkCopy = new SqlBulkCopy(connection))
+                {
+                    
+                }
+
+
+                
+            }
         }
     }
 }
