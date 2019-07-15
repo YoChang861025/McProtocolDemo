@@ -99,6 +99,7 @@ namespace McProtocolDemo
                 Console.WriteLine("The input data is valid, so the insert is deleted.");
 
             }
+
             for (int i = 0; i < size; i++)
             {
                 var startaddress_string = Convert.ToString(startaddress + i);
