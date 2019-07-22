@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClassLibrary5
+namespace ClassSimulator
 {
     public class SV
     {
@@ -35,8 +35,9 @@ namespace ClassLibrary5
             rotationY = randomR.Next(0, 100);
             rotationZ = randomR.Next(0, 100);
 
+            
         }
-
-
+        
+        
     }
 }

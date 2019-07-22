@@ -41,8 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Buffer.cs" />
+    <Compile Include="Simulator.cs" />
     <Compile Include="Report.cs" />
-    <Compile Include="Datatable.cs" />
     <Compile Include="D_event.cs" />
     <Compile Include="Station.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
