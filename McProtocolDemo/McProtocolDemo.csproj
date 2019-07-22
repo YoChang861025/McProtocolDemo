@@ -40,7 +40,6 @@
     <Reference Include="HslCommunication, Version=5.7.1.0, Culture=neutral, PublicKeyToken=cdb2261fa039ed67, processorArchitecture=MSIL">
       <HintPath>..\packages\HslCommunication.5.7.1\lib\net451\HslCommunication.dll</HintPath>
     </Reference>
-
     <Reference Include="Microsoft.ReportViewer.Common, Version=15.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.150.1357.0\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
     </Reference>
@@ -73,7 +72,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-
     <Compile Include="Table.cs" />
     <Compile Include="CrystalReport1.cs">
       <AutoGen>True</AutoGen>

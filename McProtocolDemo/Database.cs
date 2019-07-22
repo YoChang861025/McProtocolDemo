@@ -37,39 +37,12 @@ namespace McProtocolDemo
             connection = new MySqlConnection(MySQLConnectionString);
             return connection;
         }
-
-        /*
-        public string dbHost;
-        public string dbUser;
-        public string dbPass;
-        public string dbName;
-
-        public Database()
+        private string connectionString()
         {
-            this.dbHost = "127.0.0.1";//資料庫位址
-            this.dbUser = "root";//資料庫使用者帳號
-            this.dbPass = "";//資料庫使用者密碼
-            this.dbName = "test";//資料庫名稱
-        }
-        public Database(string dbHost, string dbUser, string dbPass, string dbName)
-        {
-            this.dbHost = dbHost;//資料庫位址
-            this.dbUser = dbUser;//資料庫使用者帳號
-            this.dbPass = dbPass;//資料庫使用者密碼
-            this.dbName = dbName;//資料庫名稱
-        }
-        //建立連線
-        private MySqlConnection establishConnection()
-        {
-            MySqlConnection connection;
-            String MySQLConnectionString = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            connection = new MySqlConnection(MySQLConnectionString);
+            string connection;
+            connection = "server=" + DataIP + ";user=" + UserName + ";password=" + Password + ";database=" + DatabaseName;
             return connection;
         }
-        */
-
-        //public void CreateTable(string name)
-        
 
         //檢驗輸入是否合法，是否為D區或M區，以及開始位置是否不為正數
         public bool Valid(string name, ref short[] value, int size, int startaddress)
@@ -176,21 +149,101 @@ namespace McProtocolDemo
             }
         }
 
-        //一次更新整個Datatable到Database
-        public void InsertDatatable(DataTable _dataTable)
+        /*
+        public int InsertDatatable(DataTable _dataTable)
+        {
+            lock(DBlock)
+            {
+                string sqlString = string.Format("SELECT * FROM {0} WHERE FALSE", _dataTable.TableName);
+
+                using (MySqlConnection connection = establishConnection())
+                {
+                    using (MySqlCommand mySqlCommand = new MySqlCommand(sqlString, connection))
+                    {
+                        connection.Open();
+                        MySqlTransaction mySqlTransaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+                        try
+                        {
+                            int count = 0;
+                            MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
+                            dataAdapter.SelectCommand = new MySqlCommand(sqlString, connection);
+                            MySqlCommandBuilder builder = new MySqlCommandBuilder(dataAdapter);
+                            builder.ConflictOption = ConflictOption.OverwriteChanges;
+                            builder.SetAllValues = true;
+                            count = dataAdapter.Update(_dataTable);
+                            mySqlTransaction.Commit();
+                            _dataTable.AcceptChanges();
+                            dataAdapter.Dispose();
+                            builder.Dispose();
+
+                            return count;
+                        }
+                        catch(Exception ex)
+                        {
+                            mySqlTransaction.Rollback();
+                            Console.WriteLine(ex.Message);
+
+                            return 0;
+                        }
+                    }
+                }
+                //以下是sqlBulkCopy 應用於SQL但不能用在MySQL
+                using (var sqlBulkCopy = new SqlBulkCopy(connectionString(), SqlBulkCopyOptions.UseInternalTransaction))
+                {
+                    //設定批次量及逾時
+                    sqlBulkCopy.BatchSize = 1000;
+                    sqlBulkCopy.BulkCopyTimeout = 60;
+                    //sqlBulkCopy.NotifyAfter = 10000;
+                    //sqlBulkCopy.SqlRowsCopied += new SqlRowsCopiedEventHandler(OnSqlRowsCopied);
+
+                    //資料庫內的資料表名
+                    sqlBulkCopy.DestinationTableName = "plc";
+
+                    sqlBulkCopy.ColumnMappings.Add("StationID", "StationID");
+                    sqlBulkCopy.ColumnMappings.Add("DateTime", "DateTime");
+                    sqlBulkCopy.ColumnMappings.Add("StationState", "StationState");
+                    sqlBulkCopy.ColumnMappings.Add("Temperature", "Temperature");
+                    sqlBulkCopy.ColumnMappings.Add("Pa", "Pa");
+                    sqlBulkCopy.ColumnMappings.Add("ValueType", "ValueType");
+                    sqlBulkCopy.ColumnMappings.Add("Value", "Value");
+                    sqlBulkCopy.ColumnMappings.Add("PositionState", "PositionState");
+                    sqlBulkCopy.ColumnMappings.Add("X", "X");
+                    sqlBulkCopy.ColumnMappings.Add("Y", "Y");
+                    sqlBulkCopy.ColumnMappings.Add("Z", "Z");
+                    sqlBulkCopy.ColumnMappings.Add("A", "A");
+                    sqlBulkCopy.ColumnMappings.Add("B", "B");
+                    sqlBulkCopy.ColumnMappings.Add("C", "C");
+
+                    //開始寫入
+                    try
+                    {
+                        sqlBulkCopy.WriteToServer(_dataTable);
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                connection.Dispose();
+                */
+        //將Datatable可以直接insert進Database
+        //對於中斷點可以再處理得更好   目前的test寫成了10秒內會輸入30萬筆左右的測試資料進資料庫
+        public void Inserttable(DataTable _datatable)
         {
             lock(DBlock)
             {
                 MySqlConnection connection = establishConnection();
                 connection.Open();
-                //輸入bulkcopy之前轉換connection型別
-                //using (var sqlBulkCopy = new SqlBulkCopy(connection))
-                {
-                    
-                }
+                DataTable dt = new DataTable("plc");
+                dt = _datatable;
+                MySqlDataAdapter da = new MySqlDataAdapter("SELECT * FROM plc", connection);
+                MySqlCommandBuilder cb = new MySqlCommandBuilder(da);
+                da.Fill(dt);
 
-
-                
+                var bulk = new BulkOperation(connection);
+                bulk.DestinationTableName = "plc";
+                bulk.BulkInsert(dt);
+                connection.Close();
             }
         }
     }

@@ -31,7 +31,7 @@ namespace McProtocolDemo
 
             connect();
 
-          
+
         }
 
         protected override void OnClosed(EventArgs e)
@@ -72,12 +72,12 @@ namespace McProtocolDemo
                 // Data format convert. All convert function in McCommand
                 string strData = McCommand.ShortArrayToASCIIString(false, readData[0]);
                 //string intDataStr = McCommand.ShortArrayToInt16String(readData[1]);
-                
+
             }
-          
+
         }
 
-        private void write(int address ,string input_data)
+        private void write(int address, string input_data)
         {
             if (mcProtocol == null || !mcProtocol.IsConnected)
                 return;
@@ -104,7 +104,7 @@ namespace McProtocolDemo
 
         private void label1_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -153,51 +153,62 @@ namespace McProtocolDemo
 
         private void timer1_Tick(object sender, EventArgs e) //目前clock為1000毫秒
         {
-            SV report = new SV(); 
-            
-            DataTable table = new DataTable();
-            //init columns
-            table.Columns.Add("temperture", typeof(string));
-            table.Columns.Add("pa", typeof(string));
-            table.Columns.Add("rotationX", typeof(string));
-            table.Columns.Add("rotationY", typeof(string));
-            table.Columns.Add("rotationZ", typeof(string));
-
-            //data type
-            table.Columns.Add("Time", typeof(string));
-            table.Columns.Add("SID", typeof(string));
-            table.Columns.Add("ValueName", typeof(string));
-            table.Columns.Add("BeforeValueName", typeof(string));
-            table.Columns.Add("ValueType", typeof(string));
-            table.Columns.Add("Value", typeof(string));
-
+            SV report = new SV();
             report.getVolue();//產生資料
+            Table table;
+            table = new Table();
             
-             string s = "station1";
-             string t = DateTime.Now.ToString();
-             string state = "Normal";
-             string tem = "50C";
-             string pa = "1003pa";
-             string valuetype = "0";
-             string value = "000";
-             string posi = "X_Y";
-             string x = "17.58";
-             string y = "20.1";
-             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, "0", "0", "0", "0");
-             //成功insert進資料庫
-             
-             //table.Rows.Add(label1.Text, label2.Text, label3.Text, label4.Text, label5.Text);
+            //DataTable data = new Table.GetAllData();
 
-                //Datatable的部分目前可以做成二維陣列然後保持讀進狀態
-                //也能成功保存下來 目前只差將input的部份抽出並把datatable連動
-                DataRow dr = table.NewRow();
-                dr["temperture"] = label1.Text;
-                dr["pa"] = label2.Text;
-                dr["rotationX"] = label3.Text;
-                dr["rotationY"] = label4.Text;
-                dr["rotationZ"] = label5.Text;
-                table.Rows.Add(dr);
+            DataTable Dt = new DataTable();
+            Dt.Columns.Add("StationID");   //機器ID
+            Dt.Columns.Add("DateTime");    //時間戳記
+            Dt.Columns.Add("StationState");//機器狀態       0:Normal、1:Warning
+            Dt.Columns.Add("Temperature"); //偵測溫度
+            Dt.Columns.Add("Pa");          //偵測氣壓
+            Dt.Columns.Add("ValueType");   //預存值型別     0:D區、1:M區的值、2:例外
+            Dt.Columns.Add("Value");       //儲存的值       
+            Dt.Columns.Add("PositionState");//位置狀態      0:XYZ軸正常啟用、1:例外
+            Dt.Columns.Add("X");
+            Dt.Columns.Add("Y");
+            Dt.Columns.Add("Z");
+            Dt.Columns.Add("A");   //以下為預留空間
+            Dt.Columns.Add("B");
+            Dt.Columns.Add("C");
 
+            for (int i = 0; i < 1000; i++)
+            {
+                DataRow dr = Dt.NewRow();
+                string s = "station" + i;
+                dr["StationID"] = s;
+                string t = DateTime.Now.ToString();
+                dr["DateTime"] = t;
+                string state = "Normal";
+                dr["StationState"] = state;
+                dr["Temperature"] = i / 50 + "C";
+                string pa = 1000 + i % 100 + "pa";
+                dr["Pa"] = pa;
+                string valuetype = "0";
+                dr["ValueType"] = valuetype;
+                string value = "000";
+                dr["Value"] = value;
+                string posi = "X_Y";
+                dr["PositionState"] = posi;
+                string x = "17.58";
+                dr["X"] = x;
+                string y = "20.1";
+                dr["Y"] = y;
+                dr["Z"] = "0";
+                dr["A"] = "a";
+                dr["B"] = "b";
+                dr["C"] = "c";
+
+                Dt.Rows.Add(dr);
+                //Insert Query 測試
+                //db.InsertOneQuery(s, t, state, "50C", pa, valuetype, value, posi, x, y, "0", "0", "0", "0");
+
+            }
+            db.Inserttable(Dt);
 
 
             label1.Text = report.temperatue.ToString();
@@ -205,14 +216,12 @@ namespace McProtocolDemo
             label3.Text = report.rotationX.ToString();
             label4.Text = report.rotationY.ToString();
             label5.Text = report.rotationZ.ToString();//顯示最新一筆資料在表格中
-
-
+            
             label1.Update();
             label2.Update();
             label3.Update();
             label4.Update();
             label5.Update();
-
 
             /* write(input_address, label1.Text);
              input_address++;
@@ -236,7 +245,7 @@ namespace McProtocolDemo
                 chart1.Series[4].Points.AddXY(i, report.rotationZ);//更新圖ALL
 
                 chart2.Series[0].Points.AddXY(i, report.temperatue);//更新圖temperature
-                            
+
                 chart3.Series[0].Points.AddXY(i, report.pa);//更新圖PA
 
                 chart4.Series[0].Points.AddXY(i, report.rotationX);
@@ -248,7 +257,8 @@ namespace McProtocolDemo
                 chart3.ChartAreas["temperature"].AxisY.Maximum = 350;
                 chart3.ChartAreas["temperature"].AxisY.Minimum = 300;//限制y軸長度
             }
-            else if (i >= 21) {
+            else if (i >= 21)
+            {
                 chart1.Series[0].Points.AddXY(i, report.temperatue);
                 chart1.Series[1].Points.AddXY(i, report.pa);
                 chart1.Series[2].Points.AddXY(i, report.rotationX);
@@ -281,13 +291,10 @@ namespace McProtocolDemo
 
             i++;
 
-
-
             //Thread.Sleep(1000);
             //continue;                
 
             //while迴圈修正，手動關閉
-
         }
 
         private void chart2_Click(object sender, EventArgs e)
@@ -329,7 +336,7 @@ namespace McProtocolDemo
 
         private void button8_Click(object sender, EventArgs e)
         {
-            
+
         }
     }
 }
