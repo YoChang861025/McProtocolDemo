@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Datalist;
 
 namespace Station
 {
@@ -15,7 +14,6 @@ namespace Station
 
         public void PassData()
         {
-            Datatable datatable = new Datatable();
         }
     }
 

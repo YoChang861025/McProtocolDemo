@@ -27,16 +27,17 @@ namespace ClassLibrary5
         public void getVolue()
         {
             Random randomT = new Random();
-            temperatue = randomT.NextDouble() + 35;
+            temperatue = randomT.Next(30, 40);
             Random randomP = new Random();
-            pa = 300 + randomP.Next(1, 50) + randomP.NextDouble();
+            pa = 300 + randomP.Next(1, 50);
             Random randomR = new Random();
             rotationX = randomR.Next(0, 100);
             rotationY = randomR.Next(0, 100);
             rotationZ = randomR.Next(0, 100);
 
+            
         }
-
-
+        
+        
     }
 }

@@ -10,7 +10,6 @@ namespace McProtocol_Ref.PLC
     /// <summary>
     /// The McProtocol class to connect to PLC.
     /// </summary>
-   
     public class McProtocol
     {
         private const string TAG = "McProtocol";
@@ -18,10 +17,24 @@ namespace McProtocol_Ref.PLC
         private object _lock = new object();
         private Socket socketTCP;
         private string hostIP;
+        public string HostIP
+        {
+            get
+            {
+                return this.hostIP;
+            }
+        }
         private int hostPort;
+        public int HostPort
+        {
+            get
+            {
+                return this.hostPort;
+            }
+        }
 
         private static readonly int MAX_RETRY_TIMES = 1;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="McProtocol"/> class.
         /// </summary>
@@ -31,12 +44,12 @@ namespace McProtocol_Ref.PLC
         public McProtocol(string ip, int port)
         {
             IPAddress address;
-            if (!IPAddress.TryParse(ip, out address))
+            if (ip != "" && !IPAddress.TryParse(ip, out address))
                 throw new ArgumentException(string.Format("IP = {0} is not valid.", ip));
 
             hostIP = ip;
             hostPort = port;
-  
+
             init();
         }
 
@@ -76,14 +89,14 @@ namespace McProtocol_Ref.PLC
             {
                 try
                 {
-                    Console.WriteLine(string.Format("Try to connect McProtocol at address {0}:{1}", hostIP, hostPort));
+                    //Logger.I(TAG, string.Format("Try to connect McProtocol at address {0}:{1}", hostIP, hostPort));
                     socketTCP.Connect(hostIP, hostPort);
 
-                    Console.WriteLine(string.Format("Connect McProtocol at address {0}:{1} success", hostIP, hostPort));
+                    //Logger.I(TAG, string.Format("Connect McProtocol at address {0}:{1} success", hostIP, hostPort));
                 }
                 catch (SocketException se)
                 {
-                    Console.WriteLine(string.Format("Connect McPortocol at address {0}:{1} fail. SocketException: {2}", hostIP, hostPort, se));
+                    //Logger.E(TAG, string.Format("Connect McPortocol at address {0}:{1} fail. SocketException: {2}", hostIP, hostPort, se));
                 }
             }
         }
@@ -93,7 +106,7 @@ namespace McProtocol_Ref.PLC
         /// </summary>
         public void Reconnect()
         {
-            Console.WriteLine(string.Format("Reconnect MC protocol. ({0}:{1})", hostIP, hostPort));
+            //Logger.W(TAG, string.Format("Reconnect MC protocol. ({0}:{1})", hostIP, hostPort));
             Dispose();
             Connect();
         }
@@ -106,11 +119,11 @@ namespace McProtocol_Ref.PLC
             if (IsConnected)
             {
                 socketTCP.Shutdown(SocketShutdown.Both);
-                Console.WriteLine("McProtocol socket shutdown");
+                //Logger.I(TAG, "McProtocol socket shutdown");
             }
 
             socketTCP.Close();
-            Console.WriteLine("McProtocol socket close.");
+            //Logger.I(TAG, "McProtocol socket close.");
         }
 
         /// <summary>
@@ -122,23 +135,23 @@ namespace McProtocol_Ref.PLC
             socketTCP = null;
         }
 
-        public int ExecuteRead(string name, int startAddress, int size, ref short[] values)
+        public int ExecuteRead(string name, int startAddress, int size, ref short[] values, bool showSuccessLog = true)
         {
             if (McCommand.IsBitDevice(name))
-                return executeReadBitVal(name, startAddress, size, ref values);
+                return executeReadBitVal(name, startAddress, size, ref values, showSuccessLog);
             else
-                return executeReadWordVal(name, startAddress, size, ref values);
+                return executeReadWordVal(name, startAddress, size, ref values, showSuccessLog);
         }
 
-        public int ExecuteWrite(string name, int startAddress, int size, short[] writeValues)
+        public int ExecuteWrite(string name, int startAddress, int size, short[] writeValues, bool showSuccessLog = true)
         {
             if (McCommand.IsBitDevice(name))
-                return executeWriteBitVal(name, startAddress, size, writeValues);
+                return executeWriteBitVal(name, startAddress, size, writeValues, showSuccessLog);
             else
-                return executeWriteWordVal(name, startAddress, size, writeValues);
+                return executeWriteWordVal(name, startAddress, size, writeValues, showSuccessLog);
         }
 
-        private int executeReadBitVal(string name, int startAddress, int size, ref short[] values)
+        private int executeReadBitVal(string name, int startAddress, int size, ref short[] values, bool showSuccessLog)
         {
             int times = 0;
             int val = -1;
@@ -154,7 +167,7 @@ namespace McProtocol_Ref.PLC
                 {
                     if (!IsConnected)
                     {
-                        Console.WriteLine(string.Format("({0}:{1}) Disconnect. Fail to read bit: {2}{3}", hostIP, hostPort, name, startAddress));
+                        //Logger.W(TAG, string.Format("({0}:{1}) Disconnect. Fail to read bit: {2}{3}", hostIP, hostPort, name, startAddress));
                         Reconnect();
                     }
 
@@ -162,16 +175,19 @@ namespace McProtocol_Ref.PLC
 
                     if (val != 0)
                     {
-                        Console.WriteLine(string.Format("Read bit fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
+                        //Logger.W(TAG, string.Format("Read bit fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
                         times++;
                     }
                 }
             }
 
             if (val == 0)
-                Console.WriteLine(string.Format("Read PLC value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", values)));
-            else
-                Console.WriteLine(string.Format("Read PLC value error. Address: {0}{1}. Size: {2}. Error code: {3}", name, startAddress, size, val));
+            {
+                //if (showSuccessLog)
+                    //Logger.I(TAG, string.Format("Read PLC bit value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", values)));
+            }
+            //else
+                //Logger.E(TAG, string.Format("Read PLC bit value error. Address: {0}{1}. Size: {2}. Error code: {3}", name, startAddress, size, val));
 
             return val;
         }
@@ -210,6 +226,7 @@ namespace McProtocol_Ref.PLC
             }
             catch (Exception ex)
             {
+                //Logger.E(TAG, ex.Message + "read bit, name: " + name + ", address: " + startAddress + ", size: " + size);
                 throw ex;
             }
         }
@@ -224,7 +241,7 @@ namespace McProtocol_Ref.PLC
         /// <returns></returns>
         /// <exception cref="ArgumentException">Out of query size. Not valid.</exception>
         /// <exception cref="Exception">Device name can not be empty!</exception>
-        private int executeReadWordVal(string name, int startAddress, int size, ref short[] values)
+        private int executeReadWordVal(string name, int startAddress, int size, ref short[] values, bool showSuccessLog)
         {
             int times = 0;
             int val = -1;
@@ -240,7 +257,7 @@ namespace McProtocol_Ref.PLC
                 {
                     if (!IsConnected)
                     {
-                        Console.WriteLine(string.Format("({0}:{1}) Disconnect. Fail to read world: {2}{3}", hostIP, hostPort, name, startAddress));
+                        //Logger.W(TAG, string.Format("({0}:{1}) Disconnect. Fail to read world: {2}{3}", hostIP, hostPort, name, startAddress));
                         Reconnect();
                     }
 
@@ -248,16 +265,19 @@ namespace McProtocol_Ref.PLC
 
                     if (val != 0)
                     {
-                        Console.WriteLine(string.Format("Read word fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
+                        //Logger.W(TAG, string.Format("Read word fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
                         times++;
                     }
                 }
             }
 
             if (val == 0)
-                Console.WriteLine(string.Format("Read PLC value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", values)));
-            else
-                Console.WriteLine(string.Format("Read PLC value error. Address: {0}{1}. Size: {2}. Error code: {3}", name, startAddress, size, val));
+            {
+                //if (showSuccessLog)
+                    //Logger.I(TAG, string.Format("Read PLC word value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", values)));
+            }
+            //else
+                //Logger.E(TAG, string.Format("Read PLC word value error. Address: {0}{1}. Size: {2}. Error code: {3}", name, startAddress, size, val));
 
             return val;
         }
@@ -296,12 +316,12 @@ namespace McProtocol_Ref.PLC
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Read word value fail. Socket disconnect. Exception: {0}", ex));
+                //Logger.E(TAG, string.Format("Read word value fail. Socket disconnect. Exception: {0}", ex));
                 return -1;
             }
         }
 
-        private int executeWriteBitVal(string name, int startAddress, int size, short[] writeValues)
+        private int executeWriteBitVal(string name, int startAddress, int size, short[] writeValues, bool showSuccessLog)
         {
             int times = 0;
             int val = -1;
@@ -314,7 +334,7 @@ namespace McProtocol_Ref.PLC
                 {
                     if (!IsConnected)
                     {
-                        Console.WriteLine(string.Format("({0}:{1}) Disconnect. Fail to write bit: {2}{3}", hostIP, hostPort, name, startAddress));
+                        //Logger.W(TAG, string.Format("({0}:{1}) Disconnect. Fail to write bit: {2}{3}", hostIP, hostPort, name, startAddress));
                         Reconnect();
                     }
 
@@ -322,16 +342,19 @@ namespace McProtocol_Ref.PLC
 
                     if (val != 0)
                     {
-                        Console.WriteLine(string.Format("Write bit fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
+                        //Logger.W(TAG, string.Format("Write bit fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
                         times++;
                     }
                 }
             }
 
             if (val == 0)
-                Console.WriteLine(string.Format("Write PLC value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
-            else
-                Console.WriteLine(string.Format("Write PLC value error. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
+            {
+                //if (showSuccessLog)
+                    //Logger.I(TAG, string.Format("Write PLC bit value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
+            }
+            //else
+                //Logger.E(TAG, string.Format("Write PLC bit value error. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
 
             return val;
         }
@@ -368,6 +391,7 @@ namespace McProtocol_Ref.PLC
             }
             catch (Exception ex)
             {
+                //Logger.E(TAG, ex.Message + "write bit, name: " + name + ", address: " + startAddress + ", size: " + size);
                 throw ex;
             }
         }
@@ -381,7 +405,7 @@ namespace McProtocol_Ref.PLC
         /// <param name="writeValues">The write values.</param>
         /// <returns></returns>
         /// <exception cref="Exception">Device name can not be empty!</exception>
-        private int executeWriteWordVal(string name, int startAddress, int size, params short[] writeValues)
+        private int executeWriteWordVal(string name, int startAddress, int size, short[] writeValues, bool showSuccessLog)
         {
             int times = 0;
             int val = -1;
@@ -394,7 +418,7 @@ namespace McProtocol_Ref.PLC
                 {
                     if (!IsConnected)
                     {
-                        Console.WriteLine(string.Format("({0}:{1}) Disconnect. Fail to write world: {2}{3}", hostIP, hostPort, name, startAddress));
+                        //Logger.W(TAG, string.Format("({0}:{1}) Disconnect. Fail to write world: {2}{3}", hostIP, hostPort, name, startAddress));
                         Reconnect();
                     }
 
@@ -402,16 +426,19 @@ namespace McProtocol_Ref.PLC
 
                     if (val != 0)
                     {
-                        Console.WriteLine(string.Format("Write word fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
+                        //Logger.W(TAG, string.Format("Write word fail. Retry times: {0}. Address: {1}{2}. Return code: {3}", times, name, startAddress, val));
                         times++;
                     }
                 }
             }
 
             if (val == 0)
-                Console.WriteLine(string.Format("Write PLC value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
-            else
-                Console.WriteLine(string.Format("Write PLC value error. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
+            {
+                //if (showSuccessLog)
+                    //Logger.I(TAG, string.Format("Write PLC word value success. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
+            }
+            //else
+                //Logger.E(TAG, string.Format("Write PLC word value error. Address: {0}{1}. Size: {2}. Values: {3}.", name, startAddress, size, string.Join(",", writeValues)));
 
             return val;
         }
@@ -445,7 +472,7 @@ namespace McProtocol_Ref.PLC
             }
             catch (Exception ex)
             {
-                Console.WriteLine(string.Format("Write word value fail. Socket disconnect. Exception: {0}", ex));
+                //Logger.E(TAG, string.Format("Write word value fail. Socket disconnect. Exception: {0}", ex));
                 return -1;
             }
         }
