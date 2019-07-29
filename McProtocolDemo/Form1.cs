@@ -176,18 +176,45 @@ namespace McProtocolDemo
             report.getVolue();//產生資料
 
             sim.simulate();//產生機台更新資料狀態
-            
-             string s = "station1";
-             string t = DateTime.Now.ToString();
-             string state = "Normal";
-             string tem = "50C";
-             string pa = "1003pa";
-             string valuetype = "0";
-             string value = "000";
-             string posi = "X_Y";
-             string x = "17.58";
-             string y = "20.1";
-             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, "0", "0", "0", "0");
+
+            string s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c;
+
+            if (sim.state != 11)
+            {
+                s = "station1";
+                t = DateTime.Now.ToString();
+                state = "Normal";
+                tem = report.temperatue.ToString() + "℃"; ;
+                pa = report.pa.ToString() + "pa";
+                valuetype = "0";
+                value = "000";
+                posi = "X_Y";
+                x = report.rotationX.ToString();
+                y = report.rotationY.ToString();
+                z = report.rotationZ.ToString();
+                a = report.rotationA.ToString();
+                b = report.rotationB.ToString();
+                c = report.rotationC.ToString();
+            }
+            else
+            {
+                s = "station1";
+                t = DateTime.Now.ToString();
+                state = "Fail";
+                tem = "no data";
+                pa = "no data";
+                valuetype = "no data";
+                value = "no data";
+                posi = "no data";
+                x = "no data";
+                y = "no data";
+                z = "no data";
+                a = "no data";
+                b = "no data";
+                c = "no data";
+            }
+
+             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c);
              //成功insert進資料庫
              
              //table.Rows.Add(label1.Text, label2.Text, label3.Text, label4.Text, label5.Text);
