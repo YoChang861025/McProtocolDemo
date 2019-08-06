@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassSimulator;
 using System.Threading;
+using System.Data.SqlClient;
+using CrystalDecisions.CrystalReports.Engine;
 
 namespace McProtocolDemo
 {
@@ -184,17 +186,17 @@ namespace McProtocolDemo
                 s = "station1";
                 t = DateTime.Now.ToString();
                 state = "Normal";
-                tem = report.temperatue.ToString() + "℃"; ;
-                pa = report.pa.ToString() + "pa";
-                valuetype = "0";
-                value = "000";
-                posi = "X_Y";
-                x = report.rotationX.ToString();
-                y = report.rotationY.ToString();
-                z = report.rotationZ.ToString();
-                a = report.rotationA.ToString();
-                b = report.rotationB.ToString();
-                c = report.rotationC.ToString();
+                tem = report.temperatue.ToString() + "℃";
+                pa = report.pa.ToString();
+                valuetype = "0";//不清楚用意
+                value = "000";//不清楚用意
+                posi = "X_Y";//不清楚用意
+                x = report.rotationX.ToString() + "mm";
+                y = report.rotationY.ToString() + "mm";
+                z = report.rotationZ.ToString() + "mm";
+                a = report.rotationA.ToString() + "mm";
+                b = report.rotationB.ToString() + "mm";
+                c = report.rotationC.ToString() + "mm";
             }
             else
             {
@@ -287,7 +289,7 @@ namespace McProtocolDemo
                 }
                 else
                 {
-
+                    //不更新圖
                 }
 
                 chart2.ChartAreas["temperature"].AxisY.Maximum = 40;

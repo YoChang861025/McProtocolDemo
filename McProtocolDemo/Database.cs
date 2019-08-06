@@ -19,7 +19,7 @@ namespace McProtocolDemo
         private string Password;
         private string DatabaseName;
         private object DBlock;
-
+        
         public Database(string _dataIP, int _port, string _userName, string _password, string _databasename)
         {
             this.DataIP = _dataIP;
@@ -120,8 +120,8 @@ namespace McProtocolDemo
         //insert一列資料到Database
         public void InsertOneQuery(string _stationID, string _dateTime, string _stationState, string _temperature, string _pa, string _valuetype, string _value, string _positionState, string _x, string _y, string _z, string _a, string _b, string _c)
         {
-            lock(DBlock)
-            {
+            //lock(DBlock)
+            //{
                 //String query = "INSERT INTO PLC VALUE(\'" + _stationID + "\',\'" + _dateTime + "\',\'" +_stationState + "\',\'" + _temperature + "\',\'" + _pa + "\',\'" + _valuetype + "\',\'" + _value + "\',\'" + _positionState + "\',\'" + _x + "\',\'" + _y + "\',\'" +_z + "\',\'" + _a + "\',\'" + _b + "\',\'" + _c + "'" + ')';
                 String query = "INSERT INTO PLC (StationID,DateTime,StationState,Temperature,Pa,ValueType,Value,PositionState,X,Y,Z,A,B,C) values(@StationID,@DateTime,@StationState,@Temperature,@Pa,@ValueType,@Value,@PositionState,@X,@Y,@Z,@A,@B,@C)";
                 MySqlConnection connection = establishConnection();
@@ -165,7 +165,7 @@ namespace McProtocolDemo
                     //}
                 }
                 connection.Close();
-            }
+           // }
         }
 
         //一次更新整個Datatable到Database
