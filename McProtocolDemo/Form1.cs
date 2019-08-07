@@ -8,8 +8,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ClassLibrary5;
+using ClassSimulator;
 using System.Threading;
+using System.Data.SqlClient;
+using CrystalDecisions.CrystalReports.Engine;
 
 namespace McProtocolDemo
 {
@@ -30,8 +32,6 @@ namespace McProtocolDemo
             base.OnShown(e);
 
             connect();
-
-
         }
 
         protected override void OnClosed(EventArgs e)
@@ -154,6 +154,23 @@ namespace McProtocolDemo
         private void timer1_Tick(object sender, EventArgs e) //目前clock為1000毫秒
         {
             SV report = new SV();
+            Simulator sim = new Simulator();
+
+            DataTable table = new DataTable();
+            //init columns
+            table.Columns.Add("temperture", typeof(string));
+            table.Columns.Add("pa", typeof(string));
+            table.Columns.Add("rotationX", typeof(string));
+            table.Columns.Add("rotationY", typeof(string));
+            table.Columns.Add("rotationZ", typeof(string));
+
+            //data type
+            table.Columns.Add("Time", typeof(string));
+            table.Columns.Add("SID", typeof(string));
+            table.Columns.Add("ValueName", typeof(string));
+            table.Columns.Add("BeforeValueName", typeof(string));
+            table.Columns.Add("ValueType", typeof(string));
+            table.Columns.Add("Value", typeof(string));
             report.getVolue();//產生資料
             Table table;
             table = new Table();
@@ -210,13 +227,77 @@ namespace McProtocolDemo
             }
             db.Inserttable(Dt);
 
+            sim.simulate();//產生機台更新資料狀態
 
-            label1.Text = report.temperatue.ToString();
-            label2.Text = report.pa.ToString();
-            label3.Text = report.rotationX.ToString();
-            label4.Text = report.rotationY.ToString();
-            label5.Text = report.rotationZ.ToString();//顯示最新一筆資料在表格中
-            
+            string s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c;
+
+            if (sim.state != 11)
+            {
+                s = "station1";
+                t = DateTime.Now.ToString();
+                state = "Normal";
+                tem = report.temperatue.ToString() + "℃";
+                pa = report.pa.ToString();
+                valuetype = "0";//不清楚用意
+                value = "000";//不清楚用意
+                posi = "X_Y";//不清楚用意
+                x = report.rotationX.ToString() + "mm";
+                y = report.rotationY.ToString() + "mm";
+                z = report.rotationZ.ToString() + "mm";
+                a = report.rotationA.ToString() + "mm";
+                b = report.rotationB.ToString() + "mm";
+                c = report.rotationC.ToString() + "mm";
+            }
+            else
+            {
+                s = "station1";
+                t = DateTime.Now.ToString();
+                state = "Fail";
+                tem = "no data";
+                pa = "no data";
+                valuetype = "no data";
+                value = "no data";
+                posi = "no data";
+                x = "no data";
+                y = "no data";
+                z = "no data";
+                a = "no data";
+                b = "no data";
+                c = "no data";
+            }
+
+             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c);
+             //成功insert進資料庫
+             
+             //table.Rows.Add(label1.Text, label2.Text, label3.Text, label4.Text, label5.Text);
+
+                //Datatable的部分目前可以做成二維陣列然後保持讀進狀態
+                //也能成功保存下來 目前只差將input的部份抽出並把datatable連動
+                DataRow dr = table.NewRow();
+                dr["temperture"] = label1.Text;
+                dr["pa"] = label2.Text;
+                dr["rotationX"] = label3.Text;
+                dr["rotationY"] = label4.Text;
+                dr["rotationZ"] = label5.Text;
+                table.Rows.Add(dr);
+
+
+            if (sim.state != 11)
+            {
+                label1.Text = report.temperatue.ToString();
+                label2.Text = report.pa.ToString();
+                label3.Text = report.rotationX.ToString();
+                label4.Text = report.rotationY.ToString();
+                label5.Text = report.rotationZ.ToString();//顯示最新一筆資料在表格中
+            }
+            else
+            {
+                label1.Text = "no data";
+                label2.Text = "no data";
+                label3.Text = "no data";
+                label4.Text = "no data";
+                label5.Text = "no data";//未接收到資料
+            }
             label1.Update();
             label2.Update();
             label3.Update();
@@ -238,41 +319,52 @@ namespace McProtocolDemo
 
             if (i <= 20)
             {
-                chart1.Series[0].Points.AddXY(i, report.temperatue);
-                chart1.Series[1].Points.AddXY(i, report.pa);
-                chart1.Series[2].Points.AddXY(i, report.rotationX);
-                chart1.Series[3].Points.AddXY(i, report.rotationY);
-                chart1.Series[4].Points.AddXY(i, report.rotationZ);//更新圖ALL
+                if (sim.state != 11)
+                {
+                    chart1.Series[0].Points.AddXY(i, report.temperatue);
+                    chart1.Series[1].Points.AddXY(i, report.pa);
+                    chart1.Series[2].Points.AddXY(i, report.rotationX);
+                    chart1.Series[3].Points.AddXY(i, report.rotationY);
+                    chart1.Series[4].Points.AddXY(i, report.rotationZ);//更新圖ALL
 
-                chart2.Series[0].Points.AddXY(i, report.temperatue);//更新圖temperature
+                    chart2.Series[0].Points.AddXY(i, report.temperatue);//更新圖temperature
 
-                chart3.Series[0].Points.AddXY(i, report.pa);//更新圖PA
+                    chart3.Series[0].Points.AddXY(i, report.pa);//更新圖PA
 
-                chart4.Series[0].Points.AddXY(i, report.rotationX);
-                chart4.Series[1].Points.AddXY(i, report.rotationY);
-                chart4.Series[2].Points.AddXY(i, report.rotationZ);//更新圖Rotations
-
+                    chart4.Series[0].Points.AddXY(i, report.rotationX);
+                    chart4.Series[1].Points.AddXY(i, report.rotationY);
+                    chart4.Series[2].Points.AddXY(i, report.rotationZ);//更新圖Rotations
+                }
+                else
+                {
+                    //不更新圖
+                }
                 chart2.ChartAreas["temperature"].AxisY.Maximum = 40;
                 chart2.ChartAreas["temperature"].AxisY.Minimum = 30;
                 chart3.ChartAreas["temperature"].AxisY.Maximum = 350;
                 chart3.ChartAreas["temperature"].AxisY.Minimum = 300;//限制y軸長度
             }
-            else if (i >= 21)
-            {
-                chart1.Series[0].Points.AddXY(i, report.temperatue);
-                chart1.Series[1].Points.AddXY(i, report.pa);
-                chart1.Series[2].Points.AddXY(i, report.rotationX);
-                chart1.Series[3].Points.AddXY(i, report.rotationY);
-                chart1.Series[4].Points.AddXY(i, report.rotationZ);//更新圖ALL
+            else if (i >= 21) {
+                if (sim.state != 11)
+                {
+                    chart1.Series[0].Points.AddXY(i, report.temperatue);
+                    chart1.Series[1].Points.AddXY(i, report.pa);
+                    chart1.Series[2].Points.AddXY(i, report.rotationX);
+                    chart1.Series[3].Points.AddXY(i, report.rotationY);
+                    chart1.Series[4].Points.AddXY(i, report.rotationZ);//更新圖ALL
 
-                chart2.Series[0].Points.AddXY(i, report.temperatue);//更新圖temperature
+                    chart2.Series[0].Points.AddXY(i, report.temperatue);//更新圖temperature
 
-                chart3.Series[0].Points.AddXY(i, report.pa);//更新圖PA
+                    chart3.Series[0].Points.AddXY(i, report.pa);//更新圖PA
 
-                chart4.Series[0].Points.AddXY(i, report.rotationX);
-                chart4.Series[1].Points.AddXY(i, report.rotationY);
-                chart4.Series[2].Points.AddXY(i, report.rotationZ);//更新圖Rotations
-
+                    chart4.Series[0].Points.AddXY(i, report.rotationX);
+                    chart4.Series[1].Points.AddXY(i, report.rotationY);
+                    chart4.Series[2].Points.AddXY(i, report.rotationZ);//更新圖Rotations
+                }
+                else
+                {
+                    //不更新圖
+                }
                 chart1.ChartAreas["temperature"].AxisX.Maximum = i;
                 chart1.ChartAreas["temperature"].AxisX.Minimum = i - 20;
                 chart2.ChartAreas["temperature"].AxisX.Maximum = i;

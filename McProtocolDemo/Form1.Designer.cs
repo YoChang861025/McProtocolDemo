@@ -135,9 +135,9 @@
             // button1
             // 
             this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.button1.Location = new System.Drawing.Point(677, 28);
+            this.button1.Location = new System.Drawing.Point(677, 46);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(115, 44);
+            this.button1.Size = new System.Drawing.Size(115, 53);
             this.button1.TabIndex = 6;
             this.button1.Text = "Press to start";
             this.button1.UseVisualStyleBackColor = false;
@@ -188,9 +188,9 @@
             // 
             this.button2.BackColor = System.Drawing.Color.Red;
             this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(677, 109);
+            this.button2.Location = new System.Drawing.Point(677, 102);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(115, 44);
+            this.button2.Size = new System.Drawing.Size(115, 51);
             this.button2.TabIndex = 12;
             this.button2.Text = "Stop";
             this.button2.UseVisualStyleBackColor = false;
@@ -203,7 +203,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(108, 48);
             this.button3.TabIndex = 13;
-            this.button3.Text = "Events";
+            this.button3.Text = "Report";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -219,34 +219,34 @@
             legend1.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
             legend1.Title = "data type";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(201, 177);
+            this.chart1.Location = new System.Drawing.Point(158, 177);
             this.chart1.Name = "chart1";
             series1.ChartArea = "temperature";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series1.Legend = "Legend1";
-            series1.Name = "temperature";
+            series1.Name = "temperature (℃)";
             series2.ChartArea = "temperature";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series2.Legend = "Legend1";
-            series2.Name = "PA";
+            series2.Name = "PA (pa)";
             series3.ChartArea = "temperature";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series3.Legend = "Legend1";
-            series3.Name = "rotationX";
+            series3.Name = "rotationX (mm)";
             series4.ChartArea = "temperature";
             series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series4.Legend = "Legend1";
-            series4.Name = "rotationY";
+            series4.Name = "rotationY (mm)";
             series5.ChartArea = "temperature";
             series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series5.Legend = "Legend1";
-            series5.Name = "rotationZ";
+            series5.Name = "rotationZ (mm)";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
             this.chart1.Series.Add(series4);
             this.chart1.Series.Add(series5);
-            this.chart1.Size = new System.Drawing.Size(591, 270);
+            this.chart1.Size = new System.Drawing.Size(634, 270);
             this.chart1.TabIndex = 14;
             this.chart1.Text = "chart1";
             title1.Name = "Temperature";
@@ -261,7 +261,7 @@
             // button4
             // 
             this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
-            this.button4.Location = new System.Drawing.Point(108, 177);
+            this.button4.Location = new System.Drawing.Point(65, 177);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(87, 43);
             this.button4.TabIndex = 15;
@@ -272,7 +272,7 @@
             // button5
             // 
             this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(128)))));
-            this.button5.Location = new System.Drawing.Point(108, 226);
+            this.button5.Location = new System.Drawing.Point(65, 226);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(87, 43);
             this.button5.TabIndex = 16;
@@ -283,7 +283,7 @@
             // button6
             // 
             this.button6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.button6.Location = new System.Drawing.Point(108, 275);
+            this.button6.Location = new System.Drawing.Point(65, 275);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(87, 43);
             this.button6.TabIndex = 17;
@@ -293,7 +293,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(108, 324);
+            this.button7.Location = new System.Drawing.Point(65, 324);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(87, 43);
             this.button7.TabIndex = 18;
@@ -307,21 +307,20 @@
             chartArea2.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
             chartArea2.Name = "temperature";
             this.chart2.ChartAreas.Add(chartArea2);
-            legend2.Enabled = false;
             legend2.ItemColumnSeparatorColor = System.Drawing.SystemColors.ActiveCaptionText;
             legend2.LegendStyle = System.Windows.Forms.DataVisualization.Charting.LegendStyle.Column;
             legend2.Name = "Legend1";
             legend2.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
             legend2.Title = "data type";
             this.chart2.Legends.Add(legend2);
-            this.chart2.Location = new System.Drawing.Point(201, 177);
+            this.chart2.Location = new System.Drawing.Point(158, 177);
             this.chart2.Name = "chart2";
             series6.ChartArea = "temperature";
             series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series6.Legend = "Legend1";
-            series6.Name = "temperature";
+            series6.Name = "temperature (℃)";
             this.chart2.Series.Add(series6);
-            this.chart2.Size = new System.Drawing.Size(591, 270);
+            this.chart2.Size = new System.Drawing.Size(634, 270);
             this.chart2.TabIndex = 19;
             this.chart2.Text = "chart2";
             title2.Name = "Temperature";
@@ -333,22 +332,21 @@
             chartArea3.AxisX.ScaleView.SizeType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
             chartArea3.Name = "temperature";
             this.chart3.ChartAreas.Add(chartArea3);
-            legend3.Enabled = false;
             legend3.ItemColumnSeparatorColor = System.Drawing.SystemColors.ActiveCaptionText;
             legend3.LegendStyle = System.Windows.Forms.DataVisualization.Charting.LegendStyle.Column;
             legend3.Name = "Legend1";
             legend3.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
             legend3.Title = "data type";
             this.chart3.Legends.Add(legend3);
-            this.chart3.Location = new System.Drawing.Point(201, 177);
+            this.chart3.Location = new System.Drawing.Point(158, 177);
             this.chart3.Name = "chart3";
             series7.ChartArea = "temperature";
             series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series7.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
             series7.Legend = "Legend1";
-            series7.Name = "temperature";
+            series7.Name = "PA (pa)";
             this.chart3.Series.Add(series7);
-            this.chart3.Size = new System.Drawing.Size(591, 270);
+            this.chart3.Size = new System.Drawing.Size(634, 270);
             this.chart3.TabIndex = 20;
             this.chart3.Text = "chart3";
             title3.Name = "Temperature";
@@ -366,28 +364,28 @@
             legend4.TableStyle = System.Windows.Forms.DataVisualization.Charting.LegendTableStyle.Wide;
             legend4.Title = "data type";
             this.chart4.Legends.Add(legend4);
-            this.chart4.Location = new System.Drawing.Point(201, 177);
+            this.chart4.Location = new System.Drawing.Point(158, 177);
             this.chart4.Name = "chart4";
             series8.ChartArea = "temperature";
             series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series8.Color = System.Drawing.Color.Red;
             series8.Legend = "Legend1";
             series8.MarkerColor = System.Drawing.Color.White;
-            series8.Name = "rotationX";
+            series8.Name = "rotationX (mm)";
             series9.ChartArea = "temperature";
             series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series9.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             series9.Legend = "Legend1";
-            series9.Name = "rotationY";
+            series9.Name = "rotationY (mm)";
             series10.ChartArea = "temperature";
             series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series10.Color = System.Drawing.Color.Gray;
             series10.Legend = "Legend1";
-            series10.Name = "rotationZ";
+            series10.Name = "rotationZ (mm)";
             this.chart4.Series.Add(series8);
             this.chart4.Series.Add(series9);
             this.chart4.Series.Add(series10);
-            this.chart4.Size = new System.Drawing.Size(591, 270);
+            this.chart4.Size = new System.Drawing.Size(634, 270);
             this.chart4.TabIndex = 21;
             this.chart4.Text = "chart4";
             title4.Name = "Temperature";

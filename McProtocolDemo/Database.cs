@@ -9,6 +9,7 @@ using System.Data;
 using Z.BulkOperations;
 
 
+
 namespace McProtocolDemo
 {
     public class Database
@@ -20,6 +21,7 @@ namespace McProtocolDemo
         private string DatabaseName;
         private object DBlock;
 
+        
         public Database(string _dataIP, int _port, string _userName, string _password, string _databasename)
         {
             this.DataIP = _dataIP;
@@ -37,13 +39,6 @@ namespace McProtocolDemo
             connection = new MySqlConnection(MySQLConnectionString);
             return connection;
         }
-        private string connectionString()
-        {
-            string connection;
-            connection = "server=" + DataIP + ";user=" + UserName + ";password=" + Password + ";database=" + DatabaseName;
-            return connection;
-        }
-
         //檢驗輸入是否合法，是否為D區或M區，以及開始位置是否不為正數
         public bool Valid(string name, ref short[] value, int size, int startaddress)
         {
@@ -244,6 +239,7 @@ namespace McProtocolDemo
                 bulk.DestinationTableName = "plc";
                 bulk.BulkInsert(dt);
                 connection.Close();
+
             }
         }
     }
