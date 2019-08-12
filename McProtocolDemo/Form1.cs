@@ -172,7 +172,6 @@ namespace McProtocolDemo
             table.Columns.Add("ValueType", typeof(string));
             table.Columns.Add("Value", typeof(string));
 
-
             report.getVolue();//產生資料
 
 
@@ -189,12 +188,14 @@ namespace McProtocolDemo
             for (int i = 0; i < 10; i++)
             {
                 DataRow dr = Dt.NewRow();
+
                 dr["StationID"] = report.stationID;
                 dr["DateTime"] = DateTime.Now.ToString();
                 dr["ValueName"] = report.ValueName;
                 dr["Value"] = report.Value;
                 dr["ValueFormat"] = report.ValueFormat;
                 dr["Type"] = report.Type;
+
                 Dt.Rows.Add(dr);
                 System.Threading.Thread.Sleep(1000);
             }
@@ -211,6 +212,7 @@ namespace McProtocolDemo
             //    if (i == 99)
             //        i = 0;
             //}
+
 
             /*sim.simulate();//產生機台更新資料狀態
             string s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c;
@@ -248,7 +250,9 @@ namespace McProtocolDemo
                 a = "no data";
                 b = "no data";
                 c = "no data";
+
             }*/
+
 
             if (sim.state != 11)
             {
@@ -349,7 +353,9 @@ namespace McProtocolDemo
 
             }
 
+
             i++; */
+
 
             //Thread.Sleep(1000);
             //continue;                

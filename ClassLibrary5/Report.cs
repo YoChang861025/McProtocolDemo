@@ -27,6 +27,7 @@ namespace ClassSimulator
 
         public void getVolue()
         {
+
             Random randomV = new Random();
             int V = randomV.Next(0, 5);
             if (V == 0)
@@ -79,6 +80,7 @@ namespace ClassSimulator
                 ValueFormat = 1;
                 Type = "degree";
             }
+
         }
         
         
