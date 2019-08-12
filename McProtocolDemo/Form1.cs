@@ -171,6 +171,7 @@ namespace McProtocolDemo
             table.Columns.Add("BeforeValueName", typeof(string));
             table.Columns.Add("ValueType", typeof(string));
             table.Columns.Add("Value", typeof(string));
+
             report.getVolue();//產生資料
 
 
@@ -187,12 +188,14 @@ namespace McProtocolDemo
             for (int i = 0; i < 10; i++)
             {
                 DataRow dr = Dt.NewRow();
-                dr["StationID"] = "Station" + i;
+
+                dr["StationID"] = report.stationID;
                 dr["DateTime"] = DateTime.Now.ToString();
-                dr["ValueName"] = "GroupT";
-                dr["Value"] = "test";
-                dr["ValueFormat"] = "text";
-                dr["Type"] = "string";
+                dr["ValueName"] = report.ValueName;
+                dr["Value"] = report.Value;
+                dr["ValueFormat"] = report.ValueFormat;
+                dr["Type"] = report.Type;
+
                 Dt.Rows.Add(dr);
                 System.Threading.Thread.Sleep(1000);
             }
@@ -210,7 +213,8 @@ namespace McProtocolDemo
             //        i = 0;
             //}
 
-            sim.simulate();//產生機台更新資料狀態
+
+            /*sim.simulate();//產生機台更新資料狀態
             string s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c;
 
             if (sim.state != 11)
@@ -246,15 +250,17 @@ namespace McProtocolDemo
                 a = "no data";
                 b = "no data";
                 c = "no data";
-            }
+
+            }*/
+
 
             if (sim.state != 11)
             {
-                label1.Text = report.temperatue.ToString();
-                label2.Text = report.pa.ToString();
-                label3.Text = report.rotationX.ToString();
-                label4.Text = report.rotationY.ToString();
-                label5.Text = report.rotationZ.ToString();//顯示最新一筆資料在表格中
+                label1.Text = report.stationID;
+                label2.Text = report.ValueName;
+                label3.Text = report.Value.ToString();
+                label4.Text = report.ValueFormat.ToString();
+                label5.Text = report.Type;//顯示最新一筆資料在表格中
             }
             else
             {
@@ -283,7 +289,7 @@ namespace McProtocolDemo
 
             //read(input_address);
 
-            if (i <= 20)
+            /*if (i <= 20)
             {
                 if (sim.state != 11)
                 {
@@ -347,7 +353,9 @@ namespace McProtocolDemo
 
             }
 
-            i++;
+
+            i++; */
+
 
             //Thread.Sleep(1000);
             //continue;                

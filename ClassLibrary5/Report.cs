@@ -10,40 +10,77 @@ namespace ClassSimulator
     {
         //溫度,氣壓,軸
 
-        public double temperatue;
-        public double pa;
-        public double rotationX;
-        public double rotationY;
-        public double rotationZ;
-        public double rotationA;
-        public double rotationB;
-        public double rotationC;
+        public string stationID;
+        public string ValueName;
+        public int Value;
+        public int ValueFormat;
+        public string Type;
 
         public SV()
         {
-            temperatue = 0;
-            pa = 0;
-            rotationX = 0;
-            rotationY = 0;
-            rotationZ = 0;
-            rotationA = 0;
-            rotationB = 0;
-            rotationC = 0;
+            stationID = "station1";
+            ValueName = "";
+            Value = 0;
+            ValueFormat = 0;
+            Type = "";
     }
 
         public void getVolue()
         {
-            Random randomT = new Random();
-            temperatue = randomT.Next(30, 40);
-            Random randomP = new Random();
-            pa = 300 + randomP.Next(1, 50);
-            Random randomR = new Random();
-            rotationX = randomR.Next(0, 100);
-            rotationY = randomR.Next(0, 100);
-            rotationZ = randomR.Next(0, 100);
-            rotationA = randomR.Next(0, 100);
-            rotationB = randomR.Next(0, 100);
-            rotationC = randomR.Next(0, 100);
+
+            Random randomV = new Random();
+            int V = randomV.Next(0, 5);
+            if (V == 0)
+            {
+                stationID = "station1";
+                ValueName = "Temperature";
+                Random randomT = new Random();
+                int T = randomT.Next(300000, 400000);
+                Value = T;
+                ValueFormat = 4;
+                Type = "℃";
+            }
+            else if (V == 1)
+            {
+                stationID = "station1";
+                ValueName = "Air pressure";
+                Random randomA = new Random();
+                int A = randomA.Next(30000, 35000);
+                Value = A;
+                ValueFormat = 2;
+                Type = "pa";
+            }
+            else if (V == 2)
+            {
+                stationID = "station1";
+                ValueName = "rotationX";
+                Random randomX = new Random();
+                int X = randomX.Next(0, 901);
+                Value = X;
+                ValueFormat = 1;
+                Type = "degree";
+            }
+            else if (V == 3)
+            {
+                stationID = "station1";
+                ValueName = "rotationY";
+                Random randomY = new Random();
+                int Y = randomY.Next(0, 901);
+                Value = Y;
+                ValueFormat = 1;
+                Type = "degree";
+            }
+            else if (V == 4)
+            {
+                stationID = "station1";
+                ValueName = "rotationZ";
+                Random randomZ = new Random();
+                int Z = randomZ.Next(0, 901);
+                Value = Z;
+                ValueFormat = 1;
+                Type = "degree";
+            }
+
         }
         
         
