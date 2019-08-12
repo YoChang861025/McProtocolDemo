@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 using System.Data.SqlClient;
 using System.Data;
-//using Z.BulkOperations;
+using Z.BulkOperations;
+
 
 
 namespace McProtocolDemo
@@ -19,6 +20,7 @@ namespace McProtocolDemo
         private string Password;
         private string DatabaseName;
         private object DBlock;
+
         
         public Database(string _dataIP, int _port, string _userName, string _password, string _databasename)
         {
@@ -37,32 +39,6 @@ namespace McProtocolDemo
             connection = new MySqlConnection(MySQLConnectionString);
             return connection;
         }
-
-        /*
-        public string dbHost;
-        public string dbUser;
-        public string dbPass;
-        public string dbName;
-
-        public Database()
-        {
-            this.dbHost = "127.0.0.1";//資料庫位址
-            this.dbUser = "root";//資料庫使用者帳號
-            this.dbPass = "";//資料庫使用者密碼
-            this.dbName = "test";//資料庫名稱
-        }
-        public Database(string dbHost, string dbUser, string dbPass, string dbName)
-        {
-            this.dbHost = dbHost;//資料庫位址
-            this.dbUser = dbUser;//資料庫使用者帳號
-            this.dbPass = dbPass;//資料庫使用者密碼
-            this.dbName = dbName;//資料庫名稱
-        }
-        */
-    
-        //public void CreateTable(string name)
-        
-
         //檢驗輸入是否合法，是否為D區或M區，以及開始位置是否不為正數
         public bool Valid(string name, ref short[] value, int size, int startaddress)
         {
@@ -82,7 +58,7 @@ namespace McProtocolDemo
         }
         //還不確定如果在isOk為false的情況下怎麼將insert中止
 
-        //還沒修改
+        /*還沒修改
         public void Insert(string name, ref short[] value, int size, int startaddress)
         {
             String query;
@@ -116,14 +92,13 @@ namespace McProtocolDemo
                 }
             }
         }
-
+        */
         //insert一列資料到Database
-        public void InsertOneQuery(string _stationID, string _dateTime, string _stationState, string _temperature, string _pa, string _valuetype, string _value, string _positionState, string _x, string _y, string _z, string _a, string _b, string _c)
+        public void InsertOneQuery(string _stationID, string _dateTime, string _valuename, string _value, string _valueformat, string _type)
         {
-            //lock(DBlock)
-            //{
-                //String query = "INSERT INTO PLC VALUE(\'" + _stationID + "\',\'" + _dateTime + "\',\'" +_stationState + "\',\'" + _temperature + "\',\'" + _pa + "\',\'" + _valuetype + "\',\'" + _value + "\',\'" + _positionState + "\',\'" + _x + "\',\'" + _y + "\',\'" +_z + "\',\'" + _a + "\',\'" + _b + "\',\'" + _c + "'" + ')';
-                String query = "INSERT INTO PLC (StationID,DateTime,StationState,Temperature,Pa,ValueType,Value,PositionState,X,Y,Z,A,B,C) values(@StationID,@DateTime,@StationState,@Temperature,@Pa,@ValueType,@Value,@PositionState,@X,@Y,@Z,@A,@B,@C)";
+            lock(DBlock)
+            {
+                String query = "INSERT INTO PLC (StationID,DateTime,ValueName,Value,ValueFormat,Type) values(@StationID,@DateTime,@ValueName,@Value,@ValueFormat,@Type)";
                 MySqlConnection connection = establishConnection();
                 connection.Open();
                 using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -132,20 +107,13 @@ namespace McProtocolDemo
 
                     command.Parameters.AddWithValue("@StationID", _stationID);
                     command.Parameters.AddWithValue("@DateTime", _dateTime);
-                    command.Parameters.AddWithValue("@StationState", _stationState);
-                    command.Parameters.AddWithValue("@Temperature", _temperature);
-                    command.Parameters.AddWithValue("@Pa", _pa);
-                    command.Parameters.AddWithValue("@ValueType", _valuetype);
+                    command.Parameters.AddWithValue("@ValueName", _valuename);
                     command.Parameters.AddWithValue("@Value", _value);
-                    command.Parameters.AddWithValue("@PositionState", _positionState);
-                    command.Parameters.AddWithValue("@X", _x);
-                    command.Parameters.AddWithValue("@Y", _y);
-                    command.Parameters.AddWithValue("@Z", _z);
-                    command.Parameters.AddWithValue("@A", _a);
-                    command.Parameters.AddWithValue("@B", _b);
-                    command.Parameters.AddWithValue("@C", _c);
+                    command.Parameters.AddWithValue("@ValueFormat", _valueformat);
+                    command.Parameters.AddWithValue("@Type", _type);
 
                     command.ExecuteNonQuery();
+
                     //try
                     //{
                     //    MySqlDataReader reader = command.ExecuteReader();
@@ -165,24 +133,106 @@ namespace McProtocolDemo
                     //}
                 }
                 connection.Close();
-           // }
+            }
         }
 
-        //一次更新整個Datatable到Database
-        public void InsertDatatable(DataTable _dataTable)
+        /*
+        public int InsertDatatable(DataTable _dataTable)
         {
             lock(DBlock)
             {
+                string sqlString = string.Format("SELECT * FROM {0} WHERE FALSE", _dataTable.TableName);
+
+                using (MySqlConnection connection = establishConnection())
+                {
+                    using (MySqlCommand mySqlCommand = new MySqlCommand(sqlString, connection))
+                    {
+                        connection.Open();
+                        MySqlTransaction mySqlTransaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+                        try
+                        {
+                            int count = 0;
+                            MySqlDataAdapter dataAdapter = new MySqlDataAdapter();
+                            dataAdapter.SelectCommand = new MySqlCommand(sqlString, connection);
+                            MySqlCommandBuilder builder = new MySqlCommandBuilder(dataAdapter);
+                            builder.ConflictOption = ConflictOption.OverwriteChanges;
+                            builder.SetAllValues = true;
+                            count = dataAdapter.Update(_dataTable);
+                            mySqlTransaction.Commit();
+                            _dataTable.AcceptChanges();
+                            dataAdapter.Dispose();
+                            builder.Dispose();
+
+                            return count;
+                        }
+                        catch(Exception ex)
+                        {
+                            mySqlTransaction.Rollback();
+                            Console.WriteLine(ex.Message);
+
+                            return 0;
+                        }
+                    }
+                }
+                //以下是sqlBulkCopy 應用於SQL但不能用在MySQL
+                using (var sqlBulkCopy = new SqlBulkCopy(connectionString(), SqlBulkCopyOptions.UseInternalTransaction))
+                {
+                    //設定批次量及逾時
+                    sqlBulkCopy.BatchSize = 1000;
+                    sqlBulkCopy.BulkCopyTimeout = 60;
+                    //sqlBulkCopy.NotifyAfter = 10000;
+                    //sqlBulkCopy.SqlRowsCopied += new SqlRowsCopiedEventHandler(OnSqlRowsCopied);
+
+                    //資料庫內的資料表名
+                    sqlBulkCopy.DestinationTableName = "plc";
+
+                    sqlBulkCopy.ColumnMappings.Add("StationID", "StationID");
+                    sqlBulkCopy.ColumnMappings.Add("DateTime", "DateTime");
+                    sqlBulkCopy.ColumnMappings.Add("StationState", "StationState");
+                    sqlBulkCopy.ColumnMappings.Add("Temperature", "Temperature");
+                    sqlBulkCopy.ColumnMappings.Add("Pa", "Pa");
+                    sqlBulkCopy.ColumnMappings.Add("ValueType", "ValueType");
+                    sqlBulkCopy.ColumnMappings.Add("Value", "Value");
+                    sqlBulkCopy.ColumnMappings.Add("PositionState", "PositionState");
+                    sqlBulkCopy.ColumnMappings.Add("X", "X");
+                    sqlBulkCopy.ColumnMappings.Add("Y", "Y");
+                    sqlBulkCopy.ColumnMappings.Add("Z", "Z");
+                    sqlBulkCopy.ColumnMappings.Add("A", "A");
+                    sqlBulkCopy.ColumnMappings.Add("B", "B");
+                    sqlBulkCopy.ColumnMappings.Add("C", "C");
+
+                    //開始寫入
+                    try
+                    {
+                        sqlBulkCopy.WriteToServer(_dataTable);
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+                connection.Dispose();
+                */
+        //將Datatable可以直接insert進Database
+        //對於中斷點可以再處理得更好   目前的test寫成了10秒內會輸入30萬筆左右的測試資料進資料庫
+        public void InsertTable(DataTable _datatable)
+        {
+            lock(DBlock)
+            {
+                //需要每個月初定期下載更新版本來延長license
                 MySqlConnection connection = establishConnection();
                 connection.Open();
-                //輸入bulkcopy之前轉換connection型別
-                //using (var sqlBulkCopy = new SqlBulkCopy(connection))
-                {
-                    
-                }
+                DataTable dt = new DataTable("plc");
+                dt = _datatable;
+                MySqlDataAdapter da = new MySqlDataAdapter("SELECT * FROM plc", connection);
+                MySqlCommandBuilder cb = new MySqlCommandBuilder(da);
+                da.Fill(dt);
 
+                var bulk = new BulkOperation(connection);
+                bulk.DestinationTableName = "plc";
+                bulk.BulkInsert(dt);
+                connection.Close();
 
-                
             }
         }
     }

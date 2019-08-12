@@ -32,8 +32,6 @@ namespace McProtocolDemo
             base.OnShown(e);
 
             connect();
-
-          
         }
 
         protected override void OnClosed(EventArgs e)
@@ -74,12 +72,12 @@ namespace McProtocolDemo
                 // Data format convert. All convert function in McCommand
                 string strData = McCommand.ShortArrayToASCIIString(false, readData[0]);
                 //string intDataStr = McCommand.ShortArrayToInt16String(readData[1]);
-                
+
             }
-          
+
         }
 
-        private void write(int address ,string input_data)
+        private void write(int address, string input_data)
         {
             if (mcProtocol == null || !mcProtocol.IsConnected)
                 return;
@@ -106,7 +104,7 @@ namespace McProtocolDemo
 
         private void label1_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void label5_Click(object sender, EventArgs e)
@@ -156,7 +154,6 @@ namespace McProtocolDemo
         private void timer1_Tick(object sender, EventArgs e) //目前clock為1000毫秒
         {
             SV report = new SV();
-
             Simulator sim = new Simulator();
 
             DataTable table = new DataTable();
@@ -175,10 +172,47 @@ namespace McProtocolDemo
             table.Columns.Add("ValueType", typeof(string));
             table.Columns.Add("Value", typeof(string));
 
+
             report.getVolue();//產生資料
 
-            sim.simulate();//產生機台更新資料狀態
 
+            //DataTable data = new Table.GetAllData();
+            DataTable Dt = new DataTable();
+            Dt.Columns.Add("StationID");   //機器ID
+            Dt.Columns.Add("DateTime");    //時間戳記
+            Dt.Columns.Add("ValueName");//機器狀態       0:Normal、1:Warning
+            Dt.Columns.Add("Value"); //偵測溫度
+            Dt.Columns.Add("ValueFormat");          //偵測氣壓
+            Dt.Columns.Add("Type");   //預存值型別     0:D區、1:M區的值、2:例外
+
+            //Insert Datatable 測試
+            for (int i = 0; i < 10; i++)
+            {
+                DataRow dr = Dt.NewRow();
+                dr["StationID"] = report.stationID;
+                dr["DateTime"] = DateTime.Now.ToString();
+                dr["ValueName"] = report.ValueName;
+                dr["Value"] = report.Value;
+                dr["ValueFormat"] = report.ValueFormat;
+                dr["Type"] = report.Type;
+                Dt.Rows.Add(dr);
+                System.Threading.Thread.Sleep(1000);
+            }
+            db.InsertTable(Dt);
+
+            ////Insert Query 測試
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    int values = (i * 152) % 100;
+            //    string val = values.ToString();
+            //    db.InsertOneQuery("Station" + i, DateTime.Now.ToString(), "GroupA", val, "Temperature", "C");
+            //    //一秒執行迴圈一次
+            //    System.Threading.Thread.Sleep(1000);
+            //    if (i == 99)
+            //        i = 0;
+            //}
+
+            /*sim.simulate();//產生機台更新資料狀態
             string s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c;
 
             if (sim.state != 11)
@@ -214,31 +248,15 @@ namespace McProtocolDemo
                 a = "no data";
                 b = "no data";
                 c = "no data";
-            }
-
-             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c);
-             //成功insert進資料庫
-             
-             //table.Rows.Add(label1.Text, label2.Text, label3.Text, label4.Text, label5.Text);
-
-                //Datatable的部分目前可以做成二維陣列然後保持讀進狀態
-                //也能成功保存下來 目前只差將input的部份抽出並把datatable連動
-                DataRow dr = table.NewRow();
-                dr["temperture"] = label1.Text;
-                dr["pa"] = label2.Text;
-                dr["rotationX"] = label3.Text;
-                dr["rotationY"] = label4.Text;
-                dr["rotationZ"] = label5.Text;
-                table.Rows.Add(dr);
-
+            }*/
 
             if (sim.state != 11)
             {
-                label1.Text = report.temperatue.ToString();
-                label2.Text = report.pa.ToString();
-                label3.Text = report.rotationX.ToString();
-                label4.Text = report.rotationY.ToString();
-                label5.Text = report.rotationZ.ToString();//顯示最新一筆資料在表格中
+                label1.Text = report.stationID;
+                label2.Text = report.ValueName;
+                label3.Text = report.Value.ToString();
+                label4.Text = report.ValueFormat.ToString();
+                label5.Text = report.Type;//顯示最新一筆資料在表格中
             }
             else
             {
@@ -248,13 +266,11 @@ namespace McProtocolDemo
                 label4.Text = "no data";
                 label5.Text = "no data";//未接收到資料
             }
-
             label1.Update();
             label2.Update();
             label3.Update();
             label4.Update();
             label5.Update();
-
 
             /* write(input_address, label1.Text);
              input_address++;
@@ -269,7 +285,7 @@ namespace McProtocolDemo
 
             //read(input_address);
 
-            if (i <= 20)
+            /*if (i <= 20)
             {
                 if (sim.state != 11)
                 {
@@ -291,7 +307,6 @@ namespace McProtocolDemo
                 {
                     //不更新圖
                 }
-
                 chart2.ChartAreas["temperature"].AxisY.Maximum = 40;
                 chart2.ChartAreas["temperature"].AxisY.Minimum = 30;
                 chart3.ChartAreas["temperature"].AxisY.Maximum = 350;
@@ -318,7 +333,6 @@ namespace McProtocolDemo
                 {
                     //不更新圖
                 }
-
                 chart1.ChartAreas["temperature"].AxisX.Maximum = i;
                 chart1.ChartAreas["temperature"].AxisX.Minimum = i - 20;
                 chart2.ChartAreas["temperature"].AxisX.Maximum = i;
@@ -335,15 +349,12 @@ namespace McProtocolDemo
 
             }
 
-            i++;
-
-
+            i++; */
 
             //Thread.Sleep(1000);
             //continue;                
 
             //while迴圈修正，手動關閉
-
         }
 
         private void chart2_Click(object sender, EventArgs e)
@@ -385,7 +396,7 @@ namespace McProtocolDemo
 
         private void button8_Click(object sender, EventArgs e)
         {
-            
+
         }
     }
 }

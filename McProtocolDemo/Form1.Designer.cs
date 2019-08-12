@@ -52,11 +52,6 @@
             System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Title title4 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Temperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PA = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rotationX = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rotationY = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.rotationZ = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.button1 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -74,6 +69,11 @@
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart4 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.StationID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ValueName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Value = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ValueFormat = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Type = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
@@ -86,11 +86,11 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Temperature,
-            this.PA,
-            this.rotationX,
-            this.rotationY,
-            this.rotationZ});
+            this.StationID,
+            this.ValueName,
+            this.Value,
+            this.ValueFormat,
+            this.Type});
             this.dataGridView1.Location = new System.Drawing.Point(65, 59);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -98,36 +98,6 @@
             this.dataGridView1.Size = new System.Drawing.Size(547, 94);
             this.dataGridView1.TabIndex = 5;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            // 
-            // Temperature
-            // 
-            this.Temperature.HeaderText = "Temperature";
-            this.Temperature.Name = "Temperature";
-            this.Temperature.ReadOnly = true;
-            // 
-            // PA
-            // 
-            this.PA.HeaderText = "PA";
-            this.PA.Name = "PA";
-            this.PA.ReadOnly = true;
-            // 
-            // rotationX
-            // 
-            this.rotationX.HeaderText = "rotationX";
-            this.rotationX.Name = "rotationX";
-            this.rotationX.ReadOnly = true;
-            // 
-            // rotationY
-            // 
-            this.rotationY.HeaderText = "rotationY";
-            this.rotationY.Name = "rotationY";
-            this.rotationY.ReadOnly = true;
-            // 
-            // rotationZ
-            // 
-            this.rotationZ.HeaderText = "rotationZ";
-            this.rotationZ.Name = "rotationZ";
-            this.rotationZ.ReadOnly = true;
             // 
             // button1
             // 
@@ -387,6 +357,36 @@
             title4.Name = "Temperature";
             this.chart4.Titles.Add(title4);
             // 
+            // StationID
+            // 
+            this.StationID.HeaderText = "StationID";
+            this.StationID.Name = "StationID";
+            this.StationID.ReadOnly = true;
+            // 
+            // ValueName
+            // 
+            this.ValueName.HeaderText = "ValueName";
+            this.ValueName.Name = "ValueName";
+            this.ValueName.ReadOnly = true;
+            // 
+            // Value
+            // 
+            this.Value.HeaderText = "Value";
+            this.Value.Name = "Value";
+            this.Value.ReadOnly = true;
+            // 
+            // ValueFormat
+            // 
+            this.ValueFormat.HeaderText = "ValueFormat";
+            this.ValueFormat.Name = "ValueFormat";
+            this.ValueFormat.ReadOnly = true;
+            // 
+            // Type
+            // 
+            this.Type.HeaderText = "Type";
+            this.Type.Name = "Type";
+            this.Type.ReadOnly = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -424,11 +424,6 @@
 
         #endregion
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Temperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PA;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rotationX;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rotationY;
-        private System.Windows.Forms.DataGridViewTextBoxColumn rotationZ;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -447,7 +442,11 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart3;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart4;
-
+        private System.Windows.Forms.DataGridViewTextBoxColumn StationID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ValueName;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Value;
+        private System.Windows.Forms.DataGridViewTextBoxColumn ValueFormat;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Type;
     }
 }
 

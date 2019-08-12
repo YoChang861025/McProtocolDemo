@@ -152,7 +152,7 @@ namespace McProtocolDemo.MC
 
         public bool GetFormMC()
         {
-            return this.MCP.GetDInput(this.AddressName, this.Address, this.Long, ref this.RawValue);
+            return this.MCP.GetDInput(this.Address, ref this.RawValue);
         }
     }
 }

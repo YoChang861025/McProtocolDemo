@@ -89,12 +89,12 @@ namespace McProtocolDemo.MC
             bool isOk = false;
             if (address >= 0 && this.InputMAddress >= 0 && this.InputMCount > 0)
             {
-                this.updateInputBuffer();
+                this.updateInputBuffer_M();
 
                 int index = address - this.InputMAddress;
-                if (this.inputBuffer != null && this.inputBuffer.Length > index)
+                if (this.inputBuffer_M != null && this.inputBuffer_M.Length > index)
                 {
-                    state = this.inputBuffer[index];
+                    state = this.inputBuffer_M[index];
                     isOk = true;
                 }
             }
@@ -110,8 +110,8 @@ namespace McProtocolDemo.MC
 
         public bool SetDOutput(string name, int address, int size, short[] data)
         {
-            //lock (locker)
-            //{
+            lock (locker)
+            {
             try
             {
                 if (this.McProtocol.IsConnected)
@@ -127,31 +127,26 @@ namespace McProtocolDemo.MC
                 //Logger.E(TAG, ex.Message);
                 return false;
             }
-            //}
+            }
         }
 
-        public bool GetDInput(string name, int address, int size, ref short[] data)
+        public bool GetDInput(int address, ref short[] state)
         {
-            //lock (locker)
-            //{
-            try
+
+            bool isOk = false;
+            if (address >= 0 && this.InputDAddress >= 0 && this.InputDCount > 0)
             {
-                if (this.McProtocol.IsConnected)
+                this.updateInputBuffer_D();
+
+                int index = address - this.InputDAddress;
+                if (this.inputBuffer_D != null && this.inputBuffer_D.Length > index)
                 {
-                    int errcode = this.McProtocol.ExecuteRead(name, address, size, ref data);
-                    if (errcode == 0)
-                    {
-                        return true;
-                    }
+                    string strdata = McCommand.ShortArrayToASCIIString(false,inputBuffer_D);
+                    state = McCommand.ASCIIStringToShortArray(strdata,false);
+                    isOk = true;
                 }
-                return false;
             }
-            catch (Exception ex)
-            {
-                //Logger.E(TAG, ex.Message);
-                return false;
-            }
-            //}
+            return isOk;
         }
 
         public bool ManualMode = true;
@@ -181,10 +176,11 @@ namespace McProtocolDemo.MC
             //}
         }
 
-        private bool[] inputBuffer = null;
+        private bool[] inputBuffer_M = null;
+        private short[] inputBuffer_D = new short[1];
         private DateTime inputBufferTime = DateTime.Now;
         private double inputBufferDelayMS = 50.0;
-        private void updateInputBuffer()
+        private void updateInputBuffer_M()
         {
             if (DateTime.Now.Subtract(this.inputBufferTime).TotalMilliseconds >= this.inputBufferDelayMS)
             {
@@ -202,7 +198,42 @@ namespace McProtocolDemo.MC
                             }
                             else
                             {
-                                this.inputBuffer = Array.ConvertAll(bits, x => x != 0);
+                                this.inputBuffer_M = Array.ConvertAll(bits, x => x != 0);
+                            }
+
+                            inputBufferTime = DateTime.Now;
+                        }
+                        else
+                        {
+                            //Logger.E(TAG, "No connection");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //Logger.E(TAG, ex.Message);
+                    }
+                }
+            }
+        }
+        private void updateInputBuffer_D()
+        {
+            if (DateTime.Now.Subtract(this.inputBufferTime).TotalMilliseconds >= this.inputBufferDelayMS)
+            {
+                lock (locker)
+                {
+                    try
+                    {
+                        if (this.McProtocol.IsConnected)
+                        {
+                            
+                            var errcode = this.McProtocol.ExecuteRead("D", this.InputDAddress, this.InputDCount, ref inputBuffer_D);
+                            if (errcode != 0)
+                            {
+                                //Logger.E(TAG, "Error:" + errcode);
+                            }
+                            else
+                            {
+                            
                             }
 
                             inputBufferTime = DateTime.Now;

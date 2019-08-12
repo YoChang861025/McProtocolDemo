@@ -88,7 +88,7 @@ namespace McProtocolDemo
                 mcm.MCP = mcp;
                 mcp.MInList.Add(mcm);
             }
-
+            /////連線建好後，更新資料?
             foreach (MCMValue mcm in MOutList)
             {
                 MCP mcp = this.MCPList.Find(x => x.McProtocol.HostIP == mcm.IP && x.McProtocol.HostPort == mcm.Port);
