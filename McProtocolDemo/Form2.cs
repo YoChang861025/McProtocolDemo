@@ -15,6 +15,8 @@ namespace McProtocolDemo
 {
     public partial class Form2 : Form
     {
+        private Database db = new Database("127.0.0.1", 3306, "root", "", "test");
+
         ReportDocument cryrpt = new ReportDocument();
         public Form2()
         {

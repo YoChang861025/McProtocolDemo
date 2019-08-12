@@ -172,63 +172,45 @@ namespace McProtocolDemo
             table.Columns.Add("ValueType", typeof(string));
             table.Columns.Add("Value", typeof(string));
             report.getVolue();//產生資料
-            Table table;
-            table = new Table();
-            
-            //DataTable data = new Table.GetAllData();
 
+
+            //DataTable data = new Table.GetAllData();
             DataTable Dt = new DataTable();
             Dt.Columns.Add("StationID");   //機器ID
             Dt.Columns.Add("DateTime");    //時間戳記
-            Dt.Columns.Add("StationState");//機器狀態       0:Normal、1:Warning
-            Dt.Columns.Add("Temperature"); //偵測溫度
-            Dt.Columns.Add("Pa");          //偵測氣壓
-            Dt.Columns.Add("ValueType");   //預存值型別     0:D區、1:M區的值、2:例外
-            Dt.Columns.Add("Value");       //儲存的值       
-            Dt.Columns.Add("PositionState");//位置狀態      0:XYZ軸正常啟用、1:例外
-            Dt.Columns.Add("X");
-            Dt.Columns.Add("Y");
-            Dt.Columns.Add("Z");
-            Dt.Columns.Add("A");   //以下為預留空間
-            Dt.Columns.Add("B");
-            Dt.Columns.Add("C");
+            Dt.Columns.Add("ValueName");//機器狀態       0:Normal、1:Warning
+            Dt.Columns.Add("Value"); //偵測溫度
+            Dt.Columns.Add("ValueFormat");          //偵測氣壓
+            Dt.Columns.Add("Type");   //預存值型別     0:D區、1:M區的值、2:例外
 
-            for (int i = 0; i < 1000; i++)
+            //Insert Datatable 測試
+            for (int i = 0; i < 10; i++)
             {
                 DataRow dr = Dt.NewRow();
-                string s = "station" + i;
-                dr["StationID"] = s;
-                string t = DateTime.Now.ToString();
-                dr["DateTime"] = t;
-                string state = "Normal";
-                dr["StationState"] = state;
-                dr["Temperature"] = i / 50 + "C";
-                string pa = 1000 + i % 100 + "pa";
-                dr["Pa"] = pa;
-                string valuetype = "0";
-                dr["ValueType"] = valuetype;
-                string value = "000";
-                dr["Value"] = value;
-                string posi = "X_Y";
-                dr["PositionState"] = posi;
-                string x = "17.58";
-                dr["X"] = x;
-                string y = "20.1";
-                dr["Y"] = y;
-                dr["Z"] = "0";
-                dr["A"] = "a";
-                dr["B"] = "b";
-                dr["C"] = "c";
-
+                dr["StationID"] = "Station" + i;
+                dr["DateTime"] = DateTime.Now.ToString();
+                dr["ValueName"] = "GroupT";
+                dr["Value"] = "test";
+                dr["ValueFormat"] = "text";
+                dr["Type"] = "string";
                 Dt.Rows.Add(dr);
-                //Insert Query 測試
-                //db.InsertOneQuery(s, t, state, "50C", pa, valuetype, value, posi, x, y, "0", "0", "0", "0");
-
+                System.Threading.Thread.Sleep(1000);
             }
-            db.Inserttable(Dt);
+            db.InsertTable(Dt);
+
+            ////Insert Query 測試
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    int values = (i * 152) % 100;
+            //    string val = values.ToString();
+            //    db.InsertOneQuery("Station" + i, DateTime.Now.ToString(), "GroupA", val, "Temperature", "C");
+            //    //一秒執行迴圈一次
+            //    System.Threading.Thread.Sleep(1000);
+            //    if (i == 99)
+            //        i = 0;
+            //}
 
             sim.simulate();//產生機台更新資料狀態
-
             string s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c;
 
             if (sim.state != 11)
@@ -265,22 +247,6 @@ namespace McProtocolDemo
                 b = "no data";
                 c = "no data";
             }
-
-             db.InsertOneQuery(s, t, state, tem, pa, valuetype, value, posi, x, y, z, a, b, c);
-             //成功insert進資料庫
-             
-             //table.Rows.Add(label1.Text, label2.Text, label3.Text, label4.Text, label5.Text);
-
-                //Datatable的部分目前可以做成二維陣列然後保持讀進狀態
-                //也能成功保存下來 目前只差將input的部份抽出並把datatable連動
-                DataRow dr = table.NewRow();
-                dr["temperture"] = label1.Text;
-                dr["pa"] = label2.Text;
-                dr["rotationX"] = label3.Text;
-                dr["rotationY"] = label4.Text;
-                dr["rotationZ"] = label5.Text;
-                table.Rows.Add(dr);
-
 
             if (sim.state != 11)
             {

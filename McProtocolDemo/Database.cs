@@ -58,7 +58,7 @@ namespace McProtocolDemo
         }
         //還不確定如果在isOk為false的情況下怎麼將insert中止
 
-        //還沒修改
+        /*還沒修改
         public void Insert(string name, ref short[] value, int size, int startaddress)
         {
             String query;
@@ -92,14 +92,13 @@ namespace McProtocolDemo
                 }
             }
         }
-
+        */
         //insert一列資料到Database
-        public void InsertOneQuery(string _stationID, string _dateTime, string _stationState, string _temperature, string _pa, string _valuetype, string _value, string _positionState, string _x, string _y, string _z, string _a, string _b, string _c)
+        public void InsertOneQuery(string _stationID, string _dateTime, string _valuename, string _value, string _valueformat, string _type)
         {
             lock(DBlock)
             {
-                //String query = "INSERT INTO PLC VALUE(\'" + _stationID + "\',\'" + _dateTime + "\',\'" +_stationState + "\',\'" + _temperature + "\',\'" + _pa + "\',\'" + _valuetype + "\',\'" + _value + "\',\'" + _positionState + "\',\'" + _x + "\',\'" + _y + "\',\'" +_z + "\',\'" + _a + "\',\'" + _b + "\',\'" + _c + "'" + ')';
-                String query = "INSERT INTO PLC (StationID,DateTime,StationState,Temperature,Pa,ValueType,Value,PositionState,X,Y,Z,A,B,C) values(@StationID,@DateTime,@StationState,@Temperature,@Pa,@ValueType,@Value,@PositionState,@X,@Y,@Z,@A,@B,@C)";
+                String query = "INSERT INTO PLC (StationID,DateTime,ValueName,Value,ValueFormat,Type) values(@StationID,@DateTime,@ValueName,@Value,@ValueFormat,@Type)";
                 MySqlConnection connection = establishConnection();
                 connection.Open();
                 using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -108,20 +107,13 @@ namespace McProtocolDemo
 
                     command.Parameters.AddWithValue("@StationID", _stationID);
                     command.Parameters.AddWithValue("@DateTime", _dateTime);
-                    command.Parameters.AddWithValue("@StationState", _stationState);
-                    command.Parameters.AddWithValue("@Temperature", _temperature);
-                    command.Parameters.AddWithValue("@Pa", _pa);
-                    command.Parameters.AddWithValue("@ValueType", _valuetype);
+                    command.Parameters.AddWithValue("@ValueName", _valuename);
                     command.Parameters.AddWithValue("@Value", _value);
-                    command.Parameters.AddWithValue("@PositionState", _positionState);
-                    command.Parameters.AddWithValue("@X", _x);
-                    command.Parameters.AddWithValue("@Y", _y);
-                    command.Parameters.AddWithValue("@Z", _z);
-                    command.Parameters.AddWithValue("@A", _a);
-                    command.Parameters.AddWithValue("@B", _b);
-                    command.Parameters.AddWithValue("@C", _c);
+                    command.Parameters.AddWithValue("@ValueFormat", _valueformat);
+                    command.Parameters.AddWithValue("@Type", _type);
 
                     command.ExecuteNonQuery();
+
                     //try
                     //{
                     //    MySqlDataReader reader = command.ExecuteReader();
@@ -223,10 +215,11 @@ namespace McProtocolDemo
                 */
         //將Datatable可以直接insert進Database
         //對於中斷點可以再處理得更好   目前的test寫成了10秒內會輸入30萬筆左右的測試資料進資料庫
-        public void Inserttable(DataTable _datatable)
+        public void InsertTable(DataTable _datatable)
         {
             lock(DBlock)
             {
+                //需要每個月初定期下載更新版本來延長license
                 MySqlConnection connection = establishConnection();
                 connection.Open();
                 DataTable dt = new DataTable("plc");
