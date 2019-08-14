@@ -30,7 +30,7 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.crystalReportViewer1 = new CrystalDecisions.Windows.Forms.CrystalReportViewer();
-            this.CrystalReport11 = new McProtocolDemo.CrystalReport1();
+            this.CrystalReport21 = new McProtocolDemo.CrystalReport2();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
@@ -58,22 +58,7 @@
             this.textBox9 = new System.Windows.Forms.TextBox();
             this.textBox10 = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.button9 = new System.Windows.Forms.Button();
-            this.label11 = new System.Windows.Forms.Label();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.textBox12 = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.button10 = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
-            this.textBox13 = new System.Windows.Forms.TextBox();
-            this.textBox14 = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.button11 = new System.Windows.Forms.Button();
-            this.label15 = new System.Windows.Forms.Label();
-            this.textBox15 = new System.Windows.Forms.TextBox();
-            this.textBox16 = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.button12 = new System.Windows.Forms.Button();
+            this.CrystalReport31 = new McProtocolDemo.CrystalReport3();
             this.SuspendLayout();
             // 
             // button1
@@ -89,12 +74,12 @@
             // 
             // crystalReportViewer1
             // 
-            this.crystalReportViewer1.ActiveViewIndex = 0;
+            this.crystalReportViewer1.ActiveViewIndex = -1;
             this.crystalReportViewer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.crystalReportViewer1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.crystalReportViewer1.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.crystalReportViewer1.Location = new System.Drawing.Point(197, 12);
             this.crystalReportViewer1.Name = "crystalReportViewer1";
-            this.crystalReportViewer1.ReportSource = this.CrystalReport11;
+            this.crystalReportViewer1.ReportSource = this.CrystalReport31;
             this.crystalReportViewer1.Size = new System.Drawing.Size(1117, 677);
             this.crystalReportViewer1.TabIndex = 1;
             // 
@@ -102,7 +87,7 @@
             // 
             this.button2.BackColor = System.Drawing.Color.SteelBlue;
             this.button2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button2.Location = new System.Drawing.Point(11, 512);
+            this.button2.Location = new System.Drawing.Point(11, 323);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(87, 34);
             this.button2.TabIndex = 3;
@@ -114,7 +99,7 @@
             // 
             this.button3.BackColor = System.Drawing.Color.Red;
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button3.Location = new System.Drawing.Point(12, 552);
+            this.button3.Location = new System.Drawing.Point(11, 373);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(87, 35);
             this.button3.TabIndex = 4;
@@ -328,161 +313,11 @@
             this.label10.TabIndex = 28;
             this.label10.Text = "Z range:";
             // 
-            // button9
-            // 
-            this.button9.Location = new System.Drawing.Point(133, 325);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(58, 23);
-            this.button9.TabIndex = 32;
-            this.button9.Text = "selcect";
-            this.button9.UseVisualStyleBackColor = true;
-            this.button9.Click += new System.EventHandler(this.button9_Click);
-            // 
-            // label11
-            // 
-            this.label11.Location = new System.Drawing.Point(64, 328);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(15, 20);
-            this.label11.TabIndex = 31;
-            this.label11.Text = "~";
-            // 
-            // textBox11
-            // 
-            this.textBox11.Location = new System.Drawing.Point(11, 327);
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(42, 22);
-            this.textBox11.TabIndex = 30;
-            // 
-            // textBox12
-            // 
-            this.textBox12.Location = new System.Drawing.Point(85, 325);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(42, 22);
-            this.textBox12.TabIndex = 29;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(9, 310);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(45, 12);
-            this.label12.TabIndex = 33;
-            this.label12.Text = "A range:";
-            // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(133, 369);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(58, 23);
-            this.button10.TabIndex = 37;
-            this.button10.Text = "selcect";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
-            // label13
-            // 
-            this.label13.Location = new System.Drawing.Point(64, 372);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(15, 20);
-            this.label13.TabIndex = 36;
-            this.label13.Text = "~";
-            // 
-            // textBox13
-            // 
-            this.textBox13.Location = new System.Drawing.Point(11, 369);
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(42, 22);
-            this.textBox13.TabIndex = 35;
-            // 
-            // textBox14
-            // 
-            this.textBox14.Location = new System.Drawing.Point(85, 369);
-            this.textBox14.Name = "textBox14";
-            this.textBox14.Size = new System.Drawing.Size(42, 22);
-            this.textBox14.TabIndex = 34;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(10, 354);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(45, 12);
-            this.label14.TabIndex = 38;
-            this.label14.Text = "B range:";
-            // 
-            // button11
-            // 
-            this.button11.Location = new System.Drawing.Point(133, 412);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(58, 23);
-            this.button11.TabIndex = 42;
-            this.button11.Text = "selcect";
-            this.button11.UseVisualStyleBackColor = true;
-            this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // label15
-            // 
-            this.label15.Location = new System.Drawing.Point(64, 415);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(15, 20);
-            this.label15.TabIndex = 41;
-            this.label15.Text = "~";
-            // 
-            // textBox15
-            // 
-            this.textBox15.Location = new System.Drawing.Point(11, 412);
-            this.textBox15.Name = "textBox15";
-            this.textBox15.Size = new System.Drawing.Size(42, 22);
-            this.textBox15.TabIndex = 40;
-            // 
-            // textBox16
-            // 
-            this.textBox16.Location = new System.Drawing.Point(85, 412);
-            this.textBox16.Name = "textBox16";
-            this.textBox16.Size = new System.Drawing.Size(42, 22);
-            this.textBox16.TabIndex = 39;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(10, 397);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(45, 12);
-            this.label16.TabIndex = 43;
-            this.label16.Text = "C range:";
-            // 
-            // button12
-            // 
-            this.button12.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.button12.Location = new System.Drawing.Point(11, 441);
-            this.button12.Name = "button12";
-            this.button12.Size = new System.Drawing.Size(131, 32);
-            this.button12.TabIndex = 44;
-            this.button12.Text = "All the conditions above";
-            this.button12.UseVisualStyleBackColor = false;
-            this.button12.Click += new System.EventHandler(this.button12_Click);
-            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1284, 701);
-            this.Controls.Add(this.button12);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.button11);
-            this.Controls.Add(this.label15);
-            this.Controls.Add(this.textBox15);
-            this.Controls.Add(this.textBox16);
-            this.Controls.Add(this.label14);
-            this.Controls.Add(this.button10);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.textBox13);
-            this.Controls.Add(this.textBox14);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.button9);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.textBox11);
-            this.Controls.Add(this.textBox12);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.label9);
@@ -524,7 +359,6 @@
 
         private System.Windows.Forms.Button button1;
         private CrystalDecisions.Windows.Forms.CrystalReportViewer crystalReportViewer1;
-        private CrystalReport1 CrystalReport11;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.TextBox textBox1;
@@ -552,21 +386,7 @@
         private System.Windows.Forms.TextBox textBox9;
         private System.Windows.Forms.TextBox textBox10;
         private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.TextBox textBox11;
-        private System.Windows.Forms.TextBox textBox12;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Button button10;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.TextBox textBox13;
-        private System.Windows.Forms.TextBox textBox14;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox textBox15;
-        private System.Windows.Forms.TextBox textBox16;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Button button12;
+        private CrystalReport2 CrystalReport21;
+        private CrystalReport3 CrystalReport31;
     }
 }

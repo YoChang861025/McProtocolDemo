@@ -185,8 +185,7 @@ namespace McProtocolDemo
             Dt.Columns.Add("Type");   //預存值型別     0:D區、1:M區的值、2:例外
 
             //Insert Datatable 測試
-            for (int i = 0; i < 10; i++)
-            {
+           
                 DataRow dr = Dt.NewRow();
 
                 dr["StationID"] = report.stationID;
@@ -198,7 +197,7 @@ namespace McProtocolDemo
 
                 Dt.Rows.Add(dr);
                 System.Threading.Thread.Sleep(1000);
-            }
+            
             db.InsertTable(Dt);
 
             ////Insert Query 測試
